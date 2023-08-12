@@ -1,0 +1,11 @@
+D:\dev\cs-rest\obj\Debug\cs-rest.csproj.AssemblyReference.cache
+D:\dev\cs-rest\obj\Debug\cs-rest.GeneratedMSBuildEditorConfig.editorconfig
+D:\dev\cs-rest\obj\Debug\cs-rest.csproj.CoreCompileInputs.cache
+C:\Users\RoboPhred\AppData\LocalLow\Weather Factory\Cultist Simulator\mods\CSDebug\dll\CSRest.deps.json
+C:\Users\RoboPhred\AppData\LocalLow\Weather Factory\Cultist Simulator\mods\CSDebug\dll\CSRest.dll
+C:\Users\RoboPhred\AppData\LocalLow\Weather Factory\Cultist Simulator\mods\CSDebug\dll\CSRest.pdb
+D:\dev\cs-rest\obj\Debug\CSRest.dll
+D:\dev\cs-rest\obj\Debug\CSRest.pdb
+C:\Users\RoboPhred\AppData\LocalLow\Weather Factory\Cultist Simulator\mods\CSRest\dll\CSRest.deps.json
+C:\Users\RoboPhred\AppData\LocalLow\Weather Factory\Cultist Simulator\mods\CSRest\dll\CSRest.dll
+C:\Users\RoboPhred\AppData\LocalLow\Weather Factory\Cultist Simulator\mods\CSRest\dll\CSRest.pdb
