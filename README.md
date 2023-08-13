@@ -204,10 +204,10 @@ Tokens contain the following properties
 
 ### Properties
 
-#### `sphereId`
+#### `spherePath`
 
 - **Type**: `string`
-- **Description**: The ID of the sphere containing the token.
+- **Description**: The path of the sphere.
 - **Example**: `"tabletop"`
 - **Read-only**
 

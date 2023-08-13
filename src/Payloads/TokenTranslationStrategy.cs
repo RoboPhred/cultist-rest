@@ -11,14 +11,14 @@ namespace CSRestAPI.Payloads
     public class TokenTranslationStrategy
     {
         /// <summary>
-        /// Gets the ID of the containing sphere.
+        /// Gets the fucine path of the containing sphere.
         /// </summary>
-        /// <param name="token">The token to get the sphere ID of.</param>
-        /// <returns>The id of the containing sphere.</returns>
-        [JsonPropertyGetter("sphereId")]
-        public string GetSphereId(Token token)
+        /// <param name="token">The token.</param>
+        /// <returns>The full path to the sphere.</returns>
+        [JsonPropertyGetter("spherePath")]
+        public string GetPath(Token token)
         {
-            return token.Sphere.Id;
+            return token.Sphere.GetAbsolutePath().Path;
         }
 
         /// <summary>

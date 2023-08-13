@@ -7,6 +7,7 @@ namespace CSRestAPI.Server
     using System.Threading.Tasks;
     using Ceen;
     using Ceen.Httpd;
+    using CSRestAPI.Server.Exceptions;
 
     /// <summary>
     /// A web server for receiving HTTP requests.
@@ -36,7 +37,7 @@ namespace CSRestAPI.Server
             var tcs = new CancellationTokenSource();
             var config = new ServerConfig()
                 .AddLogger(this.OnLogMessage)
-                .AddRoute(this.requestHandler);
+                .AddRoute(this.OnRequest);
 
             this.cancellationTokenSource = new CancellationTokenSource();
             HttpServer.ListenAsync(
@@ -55,6 +56,19 @@ namespace CSRestAPI.Server
         {
             this.cancellationTokenSource.Cancel();
             Logging.LogTrace("Server stopped");
+        }
+
+        private async Task<bool> OnRequest(IHttpContext context)
+        {
+            try
+            {
+                return await this.requestHandler(context);
+            }
+            catch (Exceptions.WebException e)
+            {
+                await context.SendResponse(e.StatusCode, e.Message);
+                return true;
+            }
         }
 
         private async Task OnLogMessage(IHttpContext context, Exception exception, DateTime started, TimeSpan duration)

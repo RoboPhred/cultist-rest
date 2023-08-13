@@ -25,12 +25,12 @@ namespace CSRestAPI.Payloads
         /// <summary>
         /// Gets the quantity of the token.
         /// </summary>
-        /// <param name="token">The token to get the quantity of.</param>
-        /// <returns>The token's quantity.</returns>
+        /// <param name="stack">The element stack.</param>
+        /// <returns>The quantity of the stack.</returns>
         [JsonPropertyGetter("quantity")]
-        public int GetQuantity(Token token)
+        public int GetQuantity(ElementStack stack)
         {
-            return token.Quantity;
+            return stack.Quantity;
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace CSRestAPI.Payloads
         /// <summary>
         /// Sets the mutations of the element stack.
         /// </summary>
-        /// <param name="elementStack">The element stack to set the mutations of.</param>
+        /// <param name="elementStack">The element stack.</param>
         /// <param name="mutations">The mutations to set.</param>
         [JsonPropertySetter("mutations")]
         public void SetMutations(ElementStack elementStack, JObject mutations)
@@ -106,22 +106,23 @@ namespace CSRestAPI.Payloads
         /// <summary>
         /// Gets a value indicating if the token is shrouded.
         /// </summary>
-        /// <param name="token">The token to get the shrouded status of.</param>
+        /// <param name="elementStack">The element stack.</param>
         /// <returns>The token's shrouded status.</returns>
         [JsonPropertyGetter("shrouded")]
-        public bool GetShrouded(Token token)
+        public bool GetShrouded(ElementStack elementStack)
         {
-            return token.Shrouded;
+            return elementStack.Token.Shrouded;
         }
 
         /// <summary>
         /// Sets the token's shrouded status.
         /// </summary>
-        /// <param name="token">The token to get the shrouded status of.</param>
+        /// <param name="elementStack">The element stack.</param>
         /// <param name="shrouded">The shrouded status to set.</param>
         [JsonPropertySetter("shrouded")]
-        public void SetShrouded(Token token, bool shrouded)
+        public void SetShrouded(ElementStack elementStack, bool shrouded)
         {
+            var token = elementStack.Token;
             if (shrouded)
             {
                 token.Shroud();

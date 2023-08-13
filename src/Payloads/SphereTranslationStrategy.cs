@@ -11,17 +11,6 @@ namespace CSRestAPI.Payloads
     public sealed class SphereTranslationStrategy
     {
         /// <summary>
-        /// Gets the ID for the sphere.
-        /// </summary>
-        /// <param name="sphere">The sphere to get the ID of.</param>
-        /// <returns>The Sphere ID.</returns>
-        [JsonPropertyGetter("id")]
-        public string GetId(Sphere sphere)
-        {
-            return sphere.Id;
-        }
-
-        /// <summary>
         /// Gets the path for the sphere.
         /// </summary>
         /// <param name="sphere">The sphere to get the path of.</param>
@@ -30,6 +19,17 @@ namespace CSRestAPI.Payloads
         public string GetPath(Sphere sphere)
         {
             return sphere.GetAbsolutePath().Path;
+        }
+
+        /// <summary>
+        /// Gets the category of the sphere.
+        /// </summary>
+        /// <param name="sphere">The sphere.</param>
+        /// <returns>The sphere category.</returns>
+        [JsonPropertyGetter("category")]
+        public string GetCategory(Sphere sphere)
+        {
+            return sphere.SphereCategory.ToString();
         }
     }
 }

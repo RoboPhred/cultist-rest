@@ -9,6 +9,7 @@ namespace CSRestAPI.Controllers
     using CSRestAPI.Server.Exceptions;
     using SecretHistories.Constants;
     using SecretHistories.Entities;
+    using SecretHistories.Enums;
     using SecretHistories.Fucine;
     using SecretHistories.UI;
 
@@ -31,7 +32,6 @@ namespace CSRestAPI.Controllers
             var response = context.Response;
 
             var speed = Dispatcher.RunOnMainThread(() => Watchman.Get<Heart>().GetEffectiveGameSpeed());
-
             await context.SendResponse(HttpStatusCode.OK, new { speed });
         }
 
