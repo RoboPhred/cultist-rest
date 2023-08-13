@@ -75,7 +75,7 @@ namespace CSRestAPI.Controllers
         /// <returns>A task that resolves once the request is completed.</returns>
         /// <exception cref="NotFoundException">The sphere was not found.</exception>
         /// <exception cref="BadRequestException">The request was malformed.</exception>
-        [WebRouteMethod(Method = "PUT", Path = ":sphereId/tokens")]
+        [WebRouteMethod(Method = "POST", Path = ":sphereId/tokens")]
         public async Task PutSphereToken(IHttpContext context, string sphereId)
         {
             var result = await Dispatcher.RunOnMainThread(() =>
