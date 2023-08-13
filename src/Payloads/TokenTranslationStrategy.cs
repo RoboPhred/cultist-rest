@@ -1,6 +1,9 @@
 namespace CSRestAPI.Payloads
 {
     using CSRestAPI.JsonTranslation;
+    using CSRestAPI.Server.Exceptions;
+    using SecretHistories.Entities;
+    using SecretHistories.Fucine;
     using SecretHistories.UI;
 
     /// <summary>
@@ -41,6 +44,28 @@ namespace CSRestAPI.Payloads
         public string GetPath(Token token)
         {
             return token.Sphere.GetAbsolutePath().Path;
+        }
+
+        /// <summary>
+        /// Sets the path of the token.
+        /// This effectively moves the token to the sphere.
+        /// This may have side effects, and the sphere might reject the token.
+        /// </summary>
+        /// <param name="token">The token.</param>
+        /// <param name="path">The path to move the token to.</param>
+        [JsonPropertySetter("spherePath")]
+        public void SetPath(Token token, string path)
+        {
+            var sphere = Watchman.Get<HornedAxe>().GetSphereByReallyAbsolutePathOrNullSphere(new FucinePath(path));
+            if (sphere == null)
+            {
+                throw new BadRequestException($"No sphere found at path \"{path}\".");
+            }
+
+            if (!sphere.TryAcceptToken(token, new Context(Context.ActionSource.PlayerDrag)))
+            {
+                throw new BadRequestException($"The token could not be moved to sphere \"{path}\".");
+            }
         }
 
         /// <summary>
