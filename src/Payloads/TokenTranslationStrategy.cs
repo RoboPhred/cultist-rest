@@ -57,7 +57,7 @@ namespace CSRestAPI.Payloads
         public void SetPath(Token token, string path)
         {
             var sphere = Watchman.Get<HornedAxe>().GetSphereByReallyAbsolutePathOrNullSphere(new FucinePath(path));
-            if (sphere == null)
+            if (sphere == null || !sphere.IsValid())
             {
                 throw new BadRequestException($"No sphere found at path \"{path}\".");
             }

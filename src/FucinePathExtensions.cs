@@ -2,6 +2,7 @@ namespace CSRestAPI
 {
     using System;
     using CSRestAPI.Server.Exceptions;
+    using SecretHistories.Abstract;
     using SecretHistories.Entities;
     using SecretHistories.Fucine;
     using SecretHistories.Spheres;
@@ -12,6 +13,39 @@ namespace CSRestAPI
     /// </summary>
     public static class FucinePathExtensions
     {
+        /// <summary>
+        /// Gets the token at the specified path, or null if the item is not found or is not a token.
+        /// </summary>
+        /// <param name="path">The path to get the token at.</param>
+        /// <returns>The token, or null if the path is not a token.</returns>
+        public static Token GetToken(this FucinePath path)
+        {
+            return path.WithItemAtAbsolutePath(token => token, sphere => null);
+        }
+
+        /// <summary>
+        /// Gets the payload of the token at the specified path.
+        /// </summary>
+        /// <typeparam name="T">The type of payload to filter for.</typeparam>
+        /// <param name="path">The path to get the payload at.</param>
+        /// <returns>The payload if the path represents a token with the correct payload, or null if any conditions were not met.</returns>
+        public static T GetPayload<T>(this FucinePath path)
+            where T : class, ITokenPayload
+        {
+            var token = path.GetToken();
+            if (token == null)
+            {
+                return null;
+            }
+
+            if (token.Payload is T payload)
+            {
+                return payload;
+            }
+
+            return null;
+        }
+
         /// <summary>
         /// Invokes an action with the item at the specified path.
         /// </summary>

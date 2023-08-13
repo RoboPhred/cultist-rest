@@ -93,8 +93,8 @@ namespace CSRestAPI.Controllers
             {
                 return new
                 {
-                    nextCardTime = GetNextCardTime(),
-                    nextVerbTime = GetNextVerbTime(),
+                    nextCardTime = GetNextCardTime().NanToNull(),
+                    nextVerbTime = GetNextVerbTime().NanToNull(),
                 };
             });
 
@@ -126,7 +126,14 @@ namespace CSRestAPI.Controllers
                 }
                 else if (payload.Event == "Either")
                 {
-                    timeToBeat = Math.Min(GetNextCardTime(), GetNextVerbTime());
+                    timeToBeat = Math.Min(
+                        GetNextCardTime().NanToDefault(float.PositiveInfinity),
+                        GetNextVerbTime().NanToDefault(float.PositiveInfinity));
+                }
+
+                if (float.IsPositiveInfinity(timeToBeat) || timeToBeat <= 0)
+                {
+                    throw new ConflictException("No events are available to jump to.");
                 }
 
                 var heart = Watchman.Get<Heart>();
@@ -148,13 +155,13 @@ namespace CSRestAPI.Controllers
             var lowest = float.PositiveInfinity;
             foreach (var stack in elementStacks)
             {
-                if (stack.Decays && stack.LifetimeRemaining < lowest && stack.LifetimeRemaining >= 0.2f)
+                if (stack.Decays && stack.LifetimeRemaining < lowest)
                 {
                     lowest = stack.LifetimeRemaining;
                 }
             }
 
-            return float.IsPositiveInfinity(lowest) ? 0.0f : lowest;
+            return float.IsPositiveInfinity(lowest) ? float.NaN : lowest;
         }
 
         // This code courtesy of KatTheFox
@@ -165,13 +172,13 @@ namespace CSRestAPI.Controllers
 
             if (verbList.Count == 0)
             {
-                return 0.0f;
+                return float.NaN;
             }
 
             float lowest = float.PositiveInfinity;
             foreach (Situation verb in verbList)
             {
-                if (verb.TimeRemaining < lowest && verb.TimeRemaining >= 0.1f)
+                if (verb.TimeRemaining < lowest)
                 {
                     lowest = verb.TimeRemaining;
                 }
@@ -179,7 +186,7 @@ namespace CSRestAPI.Controllers
 
             if (float.IsPositiveInfinity(lowest))
             {
-                return 0.0f;
+                return float.NaN;
             }
 
             return lowest;

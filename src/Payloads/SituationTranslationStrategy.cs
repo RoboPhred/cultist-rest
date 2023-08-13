@@ -33,7 +33,12 @@ namespace CSRestAPI.Payloads
         [JsonPropertyGetter("recipeId")]
         public string GetFallbackRecipeId(Situation situation)
         {
-            return situation.FallbackRecipeId;
+            if (!situation.FallbackRecipe.IsValid())
+            {
+                return null;
+            }
+
+            return situation.FallbackRecipe.Id;
         }
 
         /// <summary>
@@ -80,7 +85,12 @@ namespace CSRestAPI.Payloads
         [JsonPropertyGetter("currentRecipeId")]
         public string GetCurrentRecipeId(Situation situation)
         {
-            return situation.CurrentRecipeId;
+            if (!situation.CurrentRecipe.IsValid())
+            {
+                return null;
+            }
+
+            return situation.CurrentRecipe.Id;
         }
 
         /// <summary>
@@ -125,6 +135,35 @@ namespace CSRestAPI.Payloads
         public string GetDescription(Situation situation)
         {
             return situation.Description;
+        }
+
+        /// <summary>
+        /// Gets a value indicating if the situation is open.
+        /// </summary>
+        /// <param name="situation">The situation.</param>
+        /// <returns>A value indicating if the situation is open.</returns>
+        [JsonPropertyGetter("open")]
+        public bool GetIsOpen(Situation situation)
+        {
+            return situation.IsOpen;
+        }
+
+        /// <summary>
+        /// Sets if the situation is open.
+        /// </summary>
+        /// <param name="situation">The situation.</param>
+        /// <param name="value">True to open the situation, False to close it.</param>
+        [JsonPropertySetter("open")]
+        public void SetIsOpen(Situation situation, bool value)
+        {
+            if (value)
+            {
+                situation.OpenAt(situation.Token.Location);
+            }
+            else
+            {
+                situation.Close();
+            }
         }
     }
 }

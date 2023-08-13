@@ -1,6 +1,5 @@
 namespace CSRestAPI.Controllers
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -204,7 +203,7 @@ namespace CSRestAPI.Controllers
             await Dispatcher.RunOnMainThread(() =>
             {
                 var sphere = Watchman.Get<HornedAxe>().GetSphereByReallyAbsolutePathOrNullSphere(new FucinePath(path));
-                if (!sphere.IsValid())
+                if (sphere == null || !sphere.IsValid())
                 {
                     throw new NotFoundException($"No sphere found at path \"{path}\".");
                 }
@@ -218,6 +217,68 @@ namespace CSRestAPI.Controllers
                         token.Retire();
                     }
                 }
+            });
+
+            await context.SendResponse(HttpStatusCode.OK);
+        }
+
+        /// <summary>
+        /// Executes the recipe of the situation at the given path.
+        /// </summary>
+        /// <param name="context">The HTTP context of the request.</param>
+        /// <param name="path">The path of the situation token.</param>
+        /// <returns>A task that resolves once the request is completed.</returns>
+        [WebRouteMethod(Method = "POST", Path = "**path/execute")]
+        public async Task ExecuteSituationAtPath(IHttpContext context, string path)
+        {
+            var executedRecipe = await Dispatcher.RunOnMainThread(() =>
+            {
+                var situation = new FucinePath(path).GetPayload<Situation>();
+                if (situation == null)
+                {
+                    throw new NotFoundException($"No situation found at path \"{path}\".");
+                }
+
+                if (situation.StateIdentifier != SecretHistories.Enums.StateEnum.Unstarted)
+                {
+                    throw new ConflictException($"Situation {situation.VerbId} is not in the correct state to begin a recipe.");
+                }
+
+                situation.TryStart();
+                if (situation.StateIdentifier == SecretHistories.Enums.StateEnum.Unstarted)
+                {
+                    throw new ConflictException($"Situation {situation.VerbId} could not begin it's recipe.");
+                }
+
+                return situation.FallbackRecipeId;
+            });
+
+            await context.SendResponse(HttpStatusCode.OK, new { executedRecipe });
+        }
+
+        /// <summary>
+        /// Concludes the situation at the given path.
+        /// </summary>
+        /// <param name="context">The HTTP context of the request.</param>
+        /// <param name="path">The path of the situation token.</param>
+        /// <returns>A task that resolves once the request is completed.</returns>
+        [WebRouteMethod(Method = "POST", Path = "**path/conclude")]
+        public async Task ConcludeSituationAtPath(IHttpContext context, string path)
+        {
+            await Dispatcher.RunOnMainThread(() =>
+            {
+                var situation = new FucinePath(path).GetPayload<Situation>();
+                if (situation == null)
+                {
+                    throw new NotFoundException($"No situation found at path \"{path}\".");
+                }
+
+                if (situation.StateIdentifier != SecretHistories.Enums.StateEnum.Complete)
+                {
+                    throw new ConflictException($"Situation {situation.VerbId} is not in the correct state to conclude.");
+                }
+
+                situation.Conclude();
             });
 
             await context.SendResponse(HttpStatusCode.OK);

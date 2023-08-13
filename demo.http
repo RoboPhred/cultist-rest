@@ -1,0 +1,79 @@
+###
+# Pause the game
+POST http://localhost:8081/api/time/speed
+Content-Type: application/json
+
+{
+  "speed": "Paused"
+}
+
+###
+# Find all spheres at the root
+GET http://localhost:8081/api/by-path/~/spheres
+
+###
+# Find all tokens on the tabletop
+GET http://localhost:8081/api/by-path/~/tabletop/tokens
+
+###
+# Open the Sail verb
+PUT http://localhost:8081/api/by-path/~/tabletop/!mariner.localhost:8081/api/by-path/~/tabletop/!mariner.sail_0
+Content-Type: application/json
+
+{
+  "open": true
+}
+
+###
+# Find all spheres in the Sail verb
+GET http://localhost:8081/api/by-path/~/tabletop/!mariner.sail_0/spheres
+
+###
+# Move the Kite from the tabletop to the Ship sphere of the Sail verb
+PUT http://localhost:8081/api/by-path/~/tabletop/!mariner.ship.kite_3
+Content-Type: application/json
+
+{
+  "spherePath": "~/tabletop!mariner.sail_0/ship"
+}
+
+###
+# Move London from the tabletop to the Destination sphere of the Sail verb
+
+PUT http://localhost:8081/api/by-path/~/tabletop/!mariner.locations.northsea.london.away_4
+Content-Type: application/json
+
+{
+  "spherePath": "~/tabletop!mariner.sail_0/destination"
+}
+
+###
+# Start the Sail verb
+POST http://localhost:8081/api/by-path/~/tabletop!mariner.sail_0/execute
+
+###
+# View upcoming events
+GET http://localhost:8081/api/time/events
+
+
+###
+# Jump to next event
+POST http://localhost:8081/api/time/events/beat
+Content-Type: application/json
+
+{
+  "event": "Either"
+}
+
+###
+# Conclude the Sail verb
+POST http://localhost:8081/api/by-path/~/tabletop!mariner.sail_0/conclude
+
+###
+# Close the Sail verb
+PUT http://localhost:8081/api/by-path/~/tabletop/!mariner.localhost:8081/api/by-path/~/tabletop/!mariner.sail_0
+Content-Type: application/json
+
+{
+  "open": false
+}
