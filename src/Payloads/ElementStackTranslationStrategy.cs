@@ -60,11 +60,11 @@ namespace CSRestAPI.Payloads
         /// </summary>
         /// <param name="elementStack">The element stack to get the aspects of.</param>
         /// <returns>The aspects of the element stack.</returns>
-        [JsonPropertyGetter("aspects")]
+        [JsonPropertyGetter("elementAspects")]
         public JObject GetAspects(ElementStack elementStack)
         {
             var obj = new JObject();
-            foreach (var pair in elementStack.GetAspects(true))
+            foreach (var pair in elementStack.Element.Aspects)
             {
                 obj[pair.Key] = pair.Value;
             }
@@ -174,6 +174,11 @@ namespace CSRestAPI.Payloads
         [JsonPropertyGetter("uniquenessGroup")]
         public string GetUniquenessGroup(ElementStack elementStack)
         {
+            if (string.IsNullOrEmpty(elementStack.UniquenessGroup))
+            {
+                return null;
+            }
+
             return elementStack.UniquenessGroup;
         }
 

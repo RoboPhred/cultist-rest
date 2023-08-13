@@ -6,22 +6,33 @@ Rest API server for interfacing with Cultist Simulator
 
 ## Endpoints
 
-### Get All Spheres
+### Get All Spheres at the Root
 
-- **URL**: `/`
+- **URL**: `/api/by-path/~/spheres`
 - **Method**: `GET`
 - **Response**:
   - **Code**: 200 OK
   - **Content**: Array of spheres in JSON format
 
----
+### Get All Spheres in a Token
+
+- **URL**: `/api/by-path/{...path}/spheres`
+- **Method**: `GET`
+- **URL Parameters**:
+  - `path`: The full absolute path of the token.
+- **Response**:
+  - **Code**: 200 OK
+  - **Content**: Array of spheres in JSON format
+- **Exceptions**:
+  - 404 Not Found: If the path is not found.
+  - 400 Bad Request: If the path resolves to something other than a token.
 
 ### Get All Tokens in a Sphere
 
-- **URL**: `/{sphereId}/tokens`
+- **URL**: `/api/by-path/{...path}/tokens`
 - **Method**: `GET`
 - **URL Parameters**:
-  - `sphereId`: ID of the sphere to get tokens for.
+  - `path`: The full absolute path of the sphere.
 - **Query Parameters** (optional):
   - `payloadType`: Filter tokens by payload type.
   - `entityId`: Filter tokens by entity ID.
@@ -30,15 +41,14 @@ Rest API server for interfacing with Cultist Simulator
   - **Content**: Array of tokens in JSON format
 - **Exceptions**:
   - 404 Not Found: If the sphere is not found.
-
----
+  - 400 Bad Request: If the path resolves to something other than a sphere.
 
 ### Create a Token in a Sphere
 
-- **URL**: `/{sphereId}/tokens`
+- **URL**: `/api/by-path/{...path}/tokens`
 - **Method**: `POST`
 - **URL Parameters**:
-  - `sphereId`: ID of the sphere.
+  - `path`: The fucine path of a sphere.
 - **Body**: JSON object or array representing the token.
 
   - The body can be a single object, or an array of objects to create multiple tokens in one go.
@@ -54,7 +64,7 @@ Rest API server for interfacing with Cultist Simulator
       - Description: Quantity of the element to create a stack of.
     - **mutations** (type: `object`, optional)
       - Description: Mutations to apply to the element stack.
-      - Default: `{}` (empty dictionary)
+      - Default: `{}` (empty dictionai/ry)
       - Example:
         ```json
         {
@@ -76,52 +86,43 @@ Rest API server for interfacing with Cultist Simulator
   - **Content**: JSON representation of created token(s).
 - **Exceptions**:
   - 404 Not Found: If the sphere is not found.
-  - 400 Bad Request: If the request body is invalid.
+  - 400 Bad Request: If the request body is invalid, or if the path resolves to something other than a sphere.
 
----
+### Modify a Token
 
-### Get a Token in a Sphere by ID
-
-- **URL**: `/{sphereId}/tokens/{payloadId}`
-- **Method**: `GET`
-- **URL Parameters**:
-  - `sphereId`: ID of the sphere.
-  - `payloadId`: ID of the payload.
-- **Response**:
-  - **Code**: 200 OK
-  - **Content**: JSON representation of the token.
-- **Exceptions**:
-  - 404 Not Found: If the sphere or token is not found.
-
----
-
-### Modify a Token in a Sphere by ID
-
-- **URL**: `/{sphereId}/tokens/{payloadId}`
+- **URL**: `/api/by-path/{...path}`
 - **Method**: `PUT`
 - **URL Parameters**:
-  - `sphereId`: ID of the sphere.
-  - `payloadId`: ID of the payload.
+  - `path`: The fucine path of a token.
 - **Body**: JSON object representing the updates to the token.
 - **Response**:
   - **Code**: 200 OK
   - **Content**: JSON representation of the updated token.
 - **Exceptions**:
   - 404 Not Found: If the sphere or token is not found.
-  - 400 Bad Request: If the request body is invalid.
+  - 400 Bad Request: If the request body is invalid, or if the path resolves to something other than a token.
 
----
+### Delete a Token
+
+- **URL**: `/api/by-path/{...path}`
+- **Method**: `DELETE`
+- **Response**:
+  - **Code**: 200 OK
+- **Exceptions**:
+  - 404 Not Found: If the token is not found.
+  - 400 Bad Request: If the item cannot be deleted.
 
 ### Delete All Tokens in a Sphere
 
-- **URL**: `/{sphereId}/tokens`
+- **URL**: `/api/by-path/{...path}/tokens`
 - **Method**: `DELETE`
 - **URL Parameters**:
-  - `sphereId`: ID of the sphere.
+  - `path`: The fucine path of a sphere.
 - **Response**:
   - **Code**: 200 OK
 - **Exceptions**:
   - 404 Not Found: If the sphere is not found.
+  - 400 Bad Request: If the path resolves to something other than a sphere.
 
 # Game API Documentation
 
@@ -147,7 +148,7 @@ Rest API server for interfacing with Cultist Simulator
 - **Body**:
   ```json
   {
-    "GameSpeed": "Fast"
+    "gameSpeed": "Fast"
   }
   ```
 - **Possible Values**: `Paused`, `Normal`, `Fast`, `VeryFast`, `VeryVeryFast`
@@ -161,7 +162,7 @@ Rest API server for interfacing with Cultist Simulator
 - **Body**:
   ```json
   {
-    "Time": 10
+    "seconds": 10
   }
   ```
 - **Response**: `200 OK`
@@ -186,7 +187,7 @@ Rest API server for interfacing with Cultist Simulator
 - **Body**:
   ```json
   {
-    "Event": "Either"
+    "event": "Either"
   }
   ```
 - **Possible Values**: `CardDecay`, `RecipeCompletion`, `Either`
@@ -204,11 +205,25 @@ Tokens contain the following properties
 
 ### Properties
 
+#### `id`
+
+- **Type**: `string`
+- **Description**: The token's ID.
+- **Example**: `"!funds_2024"`
+- **Read-Only**
+
+#### `path`
+
+- **Type**: `string`
+- **Description**: The fucine path of this token.
+- **Example**: `"~tabletop/!funds_2024"`
+- **Read-Only**
+
 #### `spherePath`
 
 - **Type**: `string`
-- **Description**: The path of the sphere.
-- **Example**: `"tabletop"`
+- **Description**: The path of the sphere this token is contained in.
+- **Example**: `"~tabletop"`
 - **Read-only**
 
 #### `payloadType`

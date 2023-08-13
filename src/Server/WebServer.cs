@@ -64,10 +64,16 @@ namespace CSRestAPI.Server
             {
                 return await this.requestHandler(context);
             }
-            catch (Exceptions.WebException e)
+            catch (Exception e)
             {
-                await context.SendResponse(e.StatusCode, e.Message);
-                return true;
+                var webException = e.GetInnerException<Exceptions.WebException>();
+                if (webException != null)
+                {
+                    await context.SendResponse(webException.StatusCode, "text/plain", webException.Message);
+                    return true;
+                }
+
+                throw;
             }
         }
 

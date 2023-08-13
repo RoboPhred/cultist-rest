@@ -9,7 +9,6 @@ namespace CSRestAPI.Controllers
     using CSRestAPI.Server.Exceptions;
     using SecretHistories.Constants;
     using SecretHistories.Entities;
-    using SecretHistories.Enums;
     using SecretHistories.Fucine;
     using SecretHistories.UI;
 
@@ -31,7 +30,7 @@ namespace CSRestAPI.Controllers
             var request = context.Request;
             var response = context.Response;
 
-            var speed = Dispatcher.RunOnMainThread(() => Watchman.Get<Heart>().GetEffectiveGameSpeed());
+            var speed = await Dispatcher.RunOnMainThread(() => Watchman.Get<Heart>().GetEffectiveGameSpeed());
             await context.SendResponse(HttpStatusCode.OK, new { speed });
         }
 
@@ -48,6 +47,9 @@ namespace CSRestAPI.Controllers
 
             await Dispatcher.RunOnMainThread(() =>
             {
+                // Unpause from the user's pause level if needed.
+                Watchman.Get<LocalNexus>().UnPauseGame(true);
+
                 var controlEventArgs = new SpeedControlEventArgs()
                 {
                     ControlPriorityLevel = 1,
@@ -67,13 +69,13 @@ namespace CSRestAPI.Controllers
         [WebRouteMethod(Method = "POST", Path = "beat")]
         public async Task ElapseFixedBeat(IHttpContext context)
         {
-            var payload = context.ParseBody<FixedBeatPayload>();
+            var payload = context.ParseBody<PassTimePayload>();
             payload.Validate();
 
             await Dispatcher.RunOnMainThread(() =>
             {
                 var heart = Watchman.Get<Heart>();
-                heart.Beat(payload.Time, 0);
+                heart.Beat(payload.Seconds, 0);
             });
 
             await context.SendResponse(HttpStatusCode.OK);
@@ -151,8 +153,6 @@ namespace CSRestAPI.Controllers
                     lowest = stack.LifetimeRemaining;
                 }
             }
-
-            lowest = Math.Min(lowest, GetNextVerbTime());
 
             return float.IsPositiveInfinity(lowest) ? 0.0f : lowest;
         }

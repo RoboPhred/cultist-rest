@@ -3,22 +3,22 @@ namespace CSRestAPI.Payloads
     using CSRestAPI.Server.Exceptions;
 
     /// <summary>
-    /// Represents a payload for setting a fixed beat time.
+    /// Represents a payload for passing time.
     /// </summary>
-    public class FixedBeatPayload
+    public class PassTimePayload
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="FixedBeatPayload"/> class.
+        /// Initializes a new instance of the <see cref="PassTimePayload"/> class.
         /// </summary>
-        public FixedBeatPayload()
+        public PassTimePayload()
         {
         }
 
         /// <summary>
-        /// Gets or sets the time.
+        /// Gets or sets the seconds to pass.
         /// </summary>
-        /// <value>The fixed beat time.</value>
-        public float Time { get; set; }
+        /// <value>The seconds to pass.</value>
+        public float Seconds { get; set; }
 
         /// <summary>
         /// Validates the payload.
@@ -26,7 +26,7 @@ namespace CSRestAPI.Payloads
         /// <exception cref="BadRequestException">The payload is invalid.</exception>
         public void Validate()
         {
-            if (this.Time <= 0)
+            if (this.Seconds <= 0)
             {
                 throw new BadRequestException("Invalid time.");
             }

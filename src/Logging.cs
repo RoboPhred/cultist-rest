@@ -92,7 +92,8 @@ namespace CSRestAPI
         /// <param name="args">An object array that contains zero or more items to format.</param>
         public static void Log(VerbosityLevel level, IDictionary<string, string> values, string message, params object[] args)
         {
-            var sb = new StringBuilder();
+            var sb = new StringBuilder("CSRestAPI: ");
+            sb.AppendFormat("[{0}] ", level.ToString().ToUpperInvariant());
             sb.AppendFormat("DateTime={0} ", DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"));
             foreach (var key in values.Keys)
             {
@@ -100,9 +101,13 @@ namespace CSRestAPI
             }
 
             sb.Append("\n");
-            sb.AppendFormat(message, args);
+            foreach (var line in string.Format(message, args).Split("\n"))
+            {
+                sb.AppendFormat("    {0}\n", line);
+            }
 
-            Roost.Birdsong.Tweet(level, 0, sb.ToString());
+            // Roost.Birdsong.Tweet(level, 0, sb.ToString());
+            NoonUtility.Log(sb.ToString());
         }
     }
 }

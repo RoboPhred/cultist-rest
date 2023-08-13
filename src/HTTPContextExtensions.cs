@@ -92,7 +92,7 @@ namespace CSRestAPI
             }
             else if (body != null)
             {
-                await response.WriteAllJsonAsync(body);
+                await response.WriteAllAsync(body, contentType);
             }
         }
     }

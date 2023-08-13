@@ -112,6 +112,7 @@ public class CSRest : MonoBehaviour
                 { "PATH", context.Request.Path },
             },
             "Got request.");
+
         if (context.Request.Method == "OPTIONS")
         {
             // For a proper implementation of CORS, see https://github.com/expressjs/cors/blob/master/lib/index.js#L159
@@ -119,7 +120,7 @@ public class CSRest : MonoBehaviour
 
             // TODO: Choose based on available routes at this path
             context.Response.AddHeader("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
-            context.Response.AddHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+            context.Response.AddHeader("Access-Control-Allow-Headers", "Content-Type");
             context.Response.AddHeader("Access-Control-Max-Age", "1728000");
             context.Response.StatusCode = HttpStatusCode.NoContent;
             context.Response.Headers["Content-Length"] = "0";
@@ -128,7 +129,6 @@ public class CSRest : MonoBehaviour
         else
         {
             context.Response.AddHeader("Access-Control-Allow-Origin", "*");
-            context.Response.AddHeader("Access-Control-Expose-Headers", "Authorization");
         }
 
         try
