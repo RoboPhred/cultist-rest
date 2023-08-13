@@ -29,7 +29,7 @@ namespace CSRestAPI.Payloads
         [JsonPropertyGetter("path")]
         public string GetPath(Sphere sphere)
         {
-            return sphere.GetWildPath().Path;
+            return sphere.GetAbsolutePath().Path;
         }
     }
 }

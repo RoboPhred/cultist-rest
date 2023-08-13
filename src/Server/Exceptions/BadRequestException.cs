@@ -18,7 +18,7 @@ namespace CSRestAPI.Server.Exceptions
         /// <summary>
         /// Initializes a new instance of the <see cref="BadRequestException"/> class.
         /// </summary>
-        /// <param name="message">The error message</param>
+        /// <param name="message">The error message.</param>
         public BadRequestException(string message)
             : base(HttpStatusCode.BadRequest, message)
         {

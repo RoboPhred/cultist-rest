@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -104,13 +105,20 @@ public class CSRest : MonoBehaviour
 
     private async Task<bool> OnRequest(IHttpContext context)
     {
+        Logging.LogTrace(
+            new Dictionary<string, string>()
+            {
+                { "METHOD", context.Request.Method },
+                { "PATH", context.Request.Path },
+            },
+            "Got request.");
         if (context.Request.Method == "OPTIONS")
         {
             // For a proper implementation of CORS, see https://github.com/expressjs/cors/blob/master/lib/index.js#L159
             context.Response.AddHeader("Access-Control-Allow-Origin", "*");
 
             // TODO: Choose based on available routes at this path
-            context.Response.AddHeader("Access-Control-Allow-Methods", "GET, POST, DELETE");
+            context.Response.AddHeader("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
             context.Response.AddHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
             context.Response.AddHeader("Access-Control-Max-Age", "1728000");
             context.Response.AddHeader("Access-Control-Expose-Headers", "Authorization");
