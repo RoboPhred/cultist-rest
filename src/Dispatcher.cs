@@ -23,7 +23,7 @@ namespace CSRestAPI
         /// <returns>A task that completes when the action has finished.</returns>
         public static Task RunOnMainThread(Action action)
         {
-            return Dispatcher.RunOnMainThread<object>(() =>
+            return RunOnMainThread<object>(() =>
             {
                 action();
                 return null;

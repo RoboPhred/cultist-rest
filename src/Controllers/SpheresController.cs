@@ -134,7 +134,7 @@ namespace CSRestAPI.Controllers
                     throw new NotFoundException("No token with the given ID exists.");
                 }
 
-                return JsonTranslator.ObjectToJson(token);
+                return this.TokenToJObject(token);
             });
 
             await context.SendResponse(HttpStatusCode.OK, result);
@@ -147,9 +147,9 @@ namespace CSRestAPI.Controllers
         /// <param name="sphereId">The ID of the sphere.</param>
         /// <param name="payloadId">The ID of the payload.</param>
         /// <returns>A task that resolves once the request is completed.</returns>
-        [WebRouteMethod(Method = "PUT", Path = ":sphereId/tokens/:payloadId")]
         /// <exception cref="NotFoundException">THe sphere or token was not found.</exception>
         /// <exception cref="BadRequestException">The request was malformed.</exception>
+        [WebRouteMethod(Method = "PUT", Path = ":sphereId/tokens/:payloadId")]
         public async Task PutSphereTokenById(IHttpContext context, string sphereId, string payloadId)
         {
             var result = await Dispatcher.RunOnMainThread(() =>
@@ -167,10 +167,9 @@ namespace CSRestAPI.Controllers
                 }
 
                 var body = context.ParseBody<JObject>();
-                JsonTranslator.ValidateJsonUpdate(body, token);
-                JsonTranslator.UpdateObjectFromJson(body, token);
+                this.UpdateToken(body, token);
 
-                return JsonTranslator.ObjectToJson(token);
+                return this.TokenToJObject(token);
             });
 
             await context.SendResponse(HttpStatusCode.OK, result);
@@ -219,6 +218,7 @@ namespace CSRestAPI.Controllers
                         var token = item.Create(sphere);
                         return this.TokenToJObject(token);
                     }
+
                 case "Situation":
                     {
                         var item = payload.ToObject<SituationCreationPayload>();
@@ -229,6 +229,19 @@ namespace CSRestAPI.Controllers
             }
 
             throw new BadRequestException($"Unknown payload type {payloadType}");
+        }
+
+        private void UpdateToken(JObject body, Token token)
+        {
+            JsonTranslator.UpdateObjectFromJson(body, token, false);
+            if (JsonTranslator.HasStrategyFor(token.Payload))
+            {
+                JsonTranslator.UpdateObjectFromJson(body, token.Payload, false);
+            }
+            else
+            {
+                Logging.LogTrace("No strategy for token payload type {0}", token.Payload.GetType().FullName);
+            }
         }
 
         private JObject TokenToJObject(Token token)

@@ -82,7 +82,8 @@ namespace CSRestAPI.Server
         private void LogException(Exception exception, IHttpContext context)
         {
             Logging.LogError(
-                new Dictionary<string, string>() {
+                new Dictionary<string, string>()
+                {
                     { "RequestMethod", context.Request.Method },
                     { "RequestPath", context.Request.Path },
                     { "RemoteEndpoint", context.Request.RemoteEndPoint.ToString() },

@@ -12,6 +12,28 @@ namespace CSRestAPI.Payloads
     public class ElementStackTranslationStrategy
     {
         /// <summary>
+        /// Gets the ID of the element.
+        /// </summary>
+        /// <param name="elementStack">The element stack.</param>
+        /// <returns>The element ID.</returns>
+        [JsonPropertyGetter("elementId")]
+        public string GetElementId(ElementStack elementStack)
+        {
+            return elementStack.Element.Id;
+        }
+
+        /// <summary>
+        /// Gets the quantity of the token.
+        /// </summary>
+        /// <param name="token">The token to get the quantity of.</param>
+        /// <returns>The token's quantity.</returns>
+        [JsonPropertyGetter("quantity")]
+        public int GetQuantity(Token token)
+        {
+            return token.Quantity;
+        }
+
+        /// <summary>
         /// Sets the quantity of the element stack.
         /// </summary>
         /// <param name="elementStack">The element stack to set.</param>
@@ -81,48 +103,106 @@ namespace CSRestAPI.Payloads
             }
         }
 
-        [JsonPropertyGetter("elementId")]
-        public string GetElementId(ElementStack elementStack)
+        /// <summary>
+        /// Gets a value indicating if the token is shrouded.
+        /// </summary>
+        /// <param name="token">The token to get the shrouded status of.</param>
+        /// <returns>The token's shrouded status.</returns>
+        [JsonPropertyGetter("shrouded")]
+        public bool GetShrouded(Token token)
         {
-            return elementStack.Element.Id;
+            return token.Shrouded;
         }
 
+        /// <summary>
+        /// Sets the token's shrouded status.
+        /// </summary>
+        /// <param name="token">The token to get the shrouded status of.</param>
+        /// <param name="shrouded">The shrouded status to set.</param>
+        [JsonPropertySetter("shrouded")]
+        public void SetShrouded(Token token, bool shrouded)
+        {
+            if (shrouded)
+            {
+                token.Shroud();
+            }
+            else
+            {
+                token.Unshroud();
+            }
+        }
+
+        /// <summary>
+        /// Gets the label of the element stack.
+        /// </summary>
+        /// <param name="elementStack">The element stack.</param>
+        /// <returns>The element stack label.</returns>
         [JsonPropertyGetter("label")]
         public string GetLabel(ElementStack elementStack)
         {
             return elementStack.Label;
         }
 
+        /// <summary>
+        /// Gets the description of the element stack.
+        /// </summary>
+        /// <param name="elementStack">The element stack.</param>
+        /// <returns>The element stack description.</returns>
         [JsonPropertyGetter("description")]
         public string GetDescription(ElementStack elementStack)
         {
             return elementStack.Description;
         }
 
+        /// <summary>
+        /// Gets the icon of the element stack.
+        /// </summary>
+        /// <param name="elementStack">The element stack.</param>
+        /// <returns>The element stack icon.</returns>
         [JsonPropertyGetter("icon")]
         public string GetIcon(ElementStack elementStack)
         {
             return elementStack.Icon;
         }
 
+        /// <summary>
+        /// Gets the uniqueness group of the element stack.
+        /// </summary>
+        /// <param name="elementStack">The element stack.</param>
+        /// <returns>The uniqueness group of the element stack.</returns>
         [JsonPropertyGetter("uniquenessGroup")]
         public string GetUniquenessGroup(ElementStack elementStack)
         {
             return elementStack.UniquenessGroup;
         }
 
+        /// <summary>
+        /// Determines whether the element stack decays.
+        /// </summary>
+        /// <param name="elementStack">The element stack.</param>
+        /// <returns>True if the element stack decays, otherwise false.</returns>
         [JsonPropertyGetter("decays")]
         public bool GetDecays(ElementStack elementStack)
         {
             return elementStack.Decays;
         }
 
+        /// <summary>
+        /// Determines whether the element stack is metafictional.
+        /// </summary>
+        /// <param name="elementStack">The element stack.</param>
+        /// <returns>True if the element stack is metafictional, otherwise false.</returns>
         [JsonPropertyGetter("metafictional")]
         public bool GetMetafictional(ElementStack elementStack)
         {
             return elementStack.Metafictional;
         }
 
+        /// <summary>
+        /// Determines whether the element stack is unique.
+        /// </summary>
+        /// <param name="elementStack">The element stack.</param>
+        /// <returns>True if the element stack is unique, otherwise false.</returns>
         [JsonPropertyGetter("unique")]
         public bool GetUnique(ElementStack elementStack)
         {

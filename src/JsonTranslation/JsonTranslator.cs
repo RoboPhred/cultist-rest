@@ -102,7 +102,7 @@ namespace CSRestAPI.JsonTranslation
         /// <param name="payload">The payload to write.</param>
         /// <param name="target">The target to write to.</param>
         /// <exception cref="JsonTranslationException">The payload cannot be written to the target.</exception>
-        public static void ValidateJsonUpdate(JObject payload, object target)
+        public static void ValidateKnownProperties(JObject payload, object target)
         {
             var targetType = target.GetType();
 
@@ -131,9 +131,13 @@ namespace CSRestAPI.JsonTranslation
         /// </summary>
         /// <param name="payload">The payload to write.</param>
         /// <param name="target">The target to write to.</param>
-        public static void UpdateObjectFromJson(JObject payload, object target)
+        /// <param name="errorOnUnknownProperties">Whether or not to throw an exception if the payload contains unknown properties.</param>
+        public static void UpdateObjectFromJson(JObject payload, object target, bool errorOnUnknownProperties = true)
         {
-            ValidateJsonUpdate(payload, target);
+            if (errorOnUnknownProperties)
+            {
+                ValidateKnownProperties(payload, target);
+            }
 
             var targetType = target.GetType();
             var strategies = (from strategy in JsonTranslator.strategies

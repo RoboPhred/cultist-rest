@@ -121,7 +121,6 @@ public class CSRest : MonoBehaviour
             context.Response.AddHeader("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
             context.Response.AddHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
             context.Response.AddHeader("Access-Control-Max-Age", "1728000");
-            context.Response.AddHeader("Access-Control-Expose-Headers", "Authorization");
             context.Response.StatusCode = HttpStatusCode.NoContent;
             context.Response.Headers["Content-Length"] = "0";
             return true;
