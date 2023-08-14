@@ -67,16 +67,20 @@ namespace CSRestAPI.Payloads
             Recipe recipe = hasRecipe ? Watchman.Get<Compendium>().GetEntityById<Recipe>(value) : null;
             if (hasRecipe && !recipe.IsValid())
             {
-                throw new BadRequestException($"Recipe ID {value} not found.");
+                throw new UnprocessableEntityException($"Recipe ID {value} not found.");
             }
 
-            if (situation.StateIdentifier != SecretHistories.Enums.StateEnum.Unstarted)
+            if (situation.StateIdentifier == SecretHistories.Enums.StateEnum.Ongoing)
             {
                 var nullRecipe = NullRecipe.Create();
 
                 situation.State = SituationState.Rehydrate(SecretHistories.Enums.StateEnum.Unstarted, situation);
                 situation.SetRecipeActive(nullRecipe);
                 situation.CurrentRecipe = nullRecipe;
+            }
+            else if (situation.StateIdentifier != SecretHistories.Enums.StateEnum.Unstarted)
+            {
+                throw new ConflictException($"Cannot set fallback recipe ID when situation is in state {situation.StateIdentifier}.");
             }
 
             if (!hasRecipe)

@@ -88,7 +88,13 @@ Rest API server for interfacing with Cultist Simulator
   - 404 Not Found: If the sphere is not found.
   - 400 Bad Request: If the request body is invalid, or if the path resolves to something other than a sphere.
 
-### Execute a verb with its current contents
+### Execute a situation with its current contents
+
+This endpoint requires that the the situation is unstarted, and that its threshhold spheres have been filled with the cards required to execute a recipe.
+Use `GET /api/by-path/{...situationPath}/spheres` to get the threshhold spheres.
+Use `PUT /api/by-path/{...tokenPath}` with a body of `{"spherePath": "[thresholdSpherePath]"}` to move a card into the sphere's threshhold.
+
+If you instead want to force a situation to run a recipe without going through the process of attaching cards, you can use `PUT /api/by-path/{...situationPath}` with a body of `{"recipeId": "[recipeId]"}`.
 
 - **URL**: `/api/by-path/{...path}/execute`
 - **METHOD**: `POST`
@@ -371,7 +377,7 @@ In addition to handling Token JSON properties, situation tokens can handle the f
 
 #### `recipeId`
 
-- **Type**: `string`
+- **Type**: `string` or `null`
 - **Description**: The recipe ID of the situation's fallback recipe.
 - **Example**: `"recipe_1234"`
   - **Exceptions**:
@@ -379,6 +385,13 @@ In addition to handling Token JSON properties, situation tokens can handle the f
     - `ConflictException`: Raised when the situation is not in the correct state to begin a recipe.
 - **Readable**
 - **Writable**
+
+**Notes on writing**:
+
+- The recipe id must be of a recipe that exists. If the recipe id does not exist, 422 Unprocessable Entity is returned. This may interfere with the writing of other properties in the request.
+- If the situation is not in an ongoing state and not in an unstarted state, 409 Conflict will be returned. This may interfere with the writing of other properties in the request.
+- If the situation is currently in an ongoing state, its current recipe will be interrupted.
+- If a value of `null` is written, the current recipe will be stopped (if any), and the situation will return to it's idle state.
 
 #### `currentRecipeId`
 
