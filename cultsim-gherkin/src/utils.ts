@@ -13,5 +13,17 @@ export async function getVerbFromTabletop(verbId: string) {
 }
 
 export async function getElementStackByElementIdFromTabletop(
-  elementId: string
-) {}
+  elementId: string,
+  spherePath: string
+) {
+  const candidates = (await get(
+    `by-path/${spherePath}/tokens?entityId=${elementId}`
+  )) as any[];
+  if (!candidates.length) {
+    throw new Error(
+      `No element stack found with id ${elementId} in sphere ${spherePath}`
+    );
+  }
+
+  return candidates[0];
+}
