@@ -15,6 +15,17 @@ namespace CSRestAPI.Payloads
     public class SituationTranslationStrategy
     {
         /// <summary>
+        /// Gets the verb id of this situation.
+        /// </summary>
+        /// <param name="situation">The situation.</param>
+        /// <returns>The verb id.</returns>
+        [JsonPropertyGetter("verbId")]
+        public string GetVerbId(Situation situation)
+        {
+            return situation.VerbId;
+        }
+
+        /// <summary>
         /// Gets the time remaining in the situation's current recipe.
         /// </summary>
         /// <param name="situation">The situation.</param>

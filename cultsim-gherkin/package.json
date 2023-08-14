@@ -1,0 +1,38 @@
+{
+  "name": "cultsim-gherkin",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Gherkin test support for Cultist Simulator",
+  "main": "lib/index.js",
+  "bin": {
+    "cultsim-gherkin": "./dist/cli.js"
+  },
+  "scripts": {
+    "clean": "rimraf lib",
+    "build": "tsc --build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/RoboPhred/cultist-rest.git"
+  },
+  "keywords": [
+    "Cultist Simulator",
+    "Gherkin"
+  ],
+  "author": "RoboPhred",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RoboPhred/cultist-rest/issues"
+  },
+  "homepage": "https://github.com/RoboPhred/cultist-rest#readme",
+  "devDependencies": {
+    "@types/node": "^20.5.0",
+    "rimraf": "^5.0.1",
+    "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "@cucumber/cucumber": "^9.4.0",
+    "lodash": "^4.17.21",
+    "node-fetch": "^3.2.8"
+  }
+}

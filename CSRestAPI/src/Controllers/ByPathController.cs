@@ -231,7 +231,7 @@ namespace CSRestAPI.Controllers
         [WebRouteMethod(Method = "POST", Path = "**path/execute")]
         public async Task ExecuteSituationAtPath(IHttpContext context, string path)
         {
-            var executedRecipe = await Dispatcher.RunOnMainThread(() =>
+            var executedRecipeId = await Dispatcher.RunOnMainThread(() =>
             {
                 var situation = new FucinePath(path).GetPayload<Situation>();
                 if (situation == null)
@@ -253,7 +253,7 @@ namespace CSRestAPI.Controllers
                 return situation.FallbackRecipeId;
             });
 
-            await context.SendResponse(HttpStatusCode.OK, new { executedRecipe });
+            await context.SendResponse(HttpStatusCode.OK, new { executedRecipeId });
         }
 
         /// <summary>
