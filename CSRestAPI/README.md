@@ -380,15 +380,12 @@ In addition to handling Token JSON properties, situation tokens can handle the f
 - **Type**: `string` or `null`
 - **Description**: The recipe ID of the situation's fallback recipe.
 - **Example**: `"recipe_1234"`
-  - **Exceptions**:
-    - `BadRequestException`: Raised when the provided recipe ID is not found.
-    - `ConflictException`: Raised when the situation is not in the correct state to begin a recipe.
 - **Readable**
 - **Writable**
 
 **Notes on writing**:
 
-- The recipe id must be of a recipe that exists. If the recipe id does not exist, 422 Unprocessable Entity is returned. This may interfere with the writing of other properties in the request.
+- The recipe id must be of a recipe that exists. If the recipe id does not exist, 400 Bad Request is returned. This may interfere with the writing of other properties in the request.
 - If the situation is not in an ongoing state and not in an unstarted state, 409 Conflict will be returned. This may interfere with the writing of other properties in the request.
 - If the situation is currently in an ongoing state, its current recipe will be interrupted.
 - If a value of `null` is written, the current recipe will be stopped (if any), and the situation will return to it's idle state.

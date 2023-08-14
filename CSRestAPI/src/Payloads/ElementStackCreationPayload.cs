@@ -2,6 +2,7 @@ namespace CSRestAPI.Payloads
 {
     using System.Collections.Generic;
     using CSRestAPI.Server.Exceptions;
+    using SecretHistories.Entities;
     using SecretHistories.Spheres;
     using SecretHistories.UI;
 
@@ -36,6 +37,11 @@ namespace CSRestAPI.Payloads
                 throw new BadRequestException("ElementId is required");
             }
 
+            if (!Watchman.Get<Compendium>().GetEntityById<Element>(this.ElementId).IsValid())
+            {
+                throw new BadRequestException($"Element ID ${this.ElementId} is not a valid element.");
+            }
+
             if (this.Quantity <= 0)
             {
                 throw new BadRequestException("Quantity must be greater than 0");
@@ -50,6 +56,7 @@ namespace CSRestAPI.Payloads
         public Token Create(Sphere sphere)
         {
             var token = sphere.ProvisionElementToken(this.ElementId, this.Quantity);
+
             if (this.Mutations != null && this.Mutations.Count > 0)
             {
                 foreach (var pair in this.Mutations)

@@ -31,6 +31,31 @@ namespace CSRestAPI.Payloads
             {
                 throw new BadRequestException("Either verbId or recipeId must be supplied.");
             }
+
+            if (!string.IsNullOrEmpty(this.RecipeId))
+            {
+                var recipe = Watchman.Get<Compendium>().GetEntityById<Recipe>(this.RecipeId);
+                if (!recipe.IsValid())
+                {
+                    throw new BadRequestException($"RecipeId {this.RecipeId} does not exist.");
+                }
+
+                if (!string.IsNullOrEmpty(this.VerbId))
+                {
+                    if (this.VerbId != recipe.ActionId)
+                    {
+                        throw new BadRequestException($"VerbId {this.VerbId} does not match recipe verb {recipe.ActionId} for recipe {this.RecipeId}");
+                    }
+                }
+            }
+            else
+            {
+                var verb = Watchman.Get<Compendium>().GetEntityById<Verb>(this.VerbId);
+                if (!verb.IsValid())
+                {
+                    throw new BadRequestException($"VerbId {this.VerbId} does not exist.");
+                }
+            }
         }
 
         /// <summary>
@@ -50,20 +75,7 @@ namespace CSRestAPI.Payloads
             if (!string.IsNullOrEmpty(this.RecipeId))
             {
                 var recipe = Watchman.Get<Compendium>().GetEntityById<Recipe>(this.RecipeId);
-                if (!recipe.IsValid())
-                {
-                    throw new BadRequestException($"RecipeId {this.RecipeId} is invalid");
-                }
-
-                if (!string.IsNullOrEmpty(this.VerbId))
-                {
-                    if (this.VerbId != recipe.ActionId)
-                    {
-                        throw new BadRequestException($"VerbId {this.VerbId} does not match recipe verb {recipe.ActionId} for recipe {this.RecipeId}");
-                    }
-                }
-
-                cmd.WithVerbId(recipe.ActionId).WithRecipeAboutToActivate(this.RecipeId);
+                cmd.WithVerbId(recipe.ActionId).WithRecipeAboutToActivate(recipe.Id);
             }
             else if (!string.IsNullOrEmpty(this.VerbId))
             {
@@ -75,7 +87,13 @@ namespace CSRestAPI.Payloads
             }
 
             var location = new TokenLocation(0.0f, 0.0f, 0.0f, sphere.GetAbsolutePath());
-            return new TokenCreationCommand(cmd, location).Execute(new Context(Context.ActionSource.Debug), sphere);
+            var token = new TokenCreationCommand(cmd, location).Execute(new Context(Context.ActionSource.Debug), sphere);
+            if (!token.IsValid())
+            {
+                throw new InternalServerErrorException($"Failed to create situation {this.VerbId}");
+            }
+
+            return token;
         }
     }
 }

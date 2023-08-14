@@ -28,7 +28,7 @@ namespace CSRestAPI.Payloads
         {
             if (this.Seconds <= 0)
             {
-                throw new BadRequestException("Invalid time.");
+                throw new BadRequestException("Seconds must be greater than 0.");
             }
         }
     }

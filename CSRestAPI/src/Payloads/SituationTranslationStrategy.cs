@@ -57,8 +57,6 @@ namespace CSRestAPI.Payloads
         /// </summary>
         /// <param name="situation">The situation.</param>
         /// <param name="value">The recipe id.</param>
-        /// <exception cref="BadRequestException">The recipe is not found.</exception>
-        /// <exception cref="ConflictException">The situation is not in the correct state to begin a recipe.</exception>
         [JsonPropertySetter("recipeId")]
         public void SetFallbackRecipeId(Situation situation, string value)
         {
@@ -67,7 +65,7 @@ namespace CSRestAPI.Payloads
             Recipe recipe = hasRecipe ? Watchman.Get<Compendium>().GetEntityById<Recipe>(value) : null;
             if (hasRecipe && !recipe.IsValid())
             {
-                throw new UnprocessableEntityException($"Recipe ID {value} not found.");
+                throw new BadRequestException($"Recipe ID {value} not found.");
             }
 
             if (situation.StateIdentifier == SecretHistories.Enums.StateEnum.Ongoing)
