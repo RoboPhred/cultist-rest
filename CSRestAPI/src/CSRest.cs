@@ -135,12 +135,39 @@ public class CSRest : MonoBehaviour
         {
             return await this.router.HandleRequest(context);
         }
-        catch (WebException e)
+        catch (Exception e)
         {
-            await context.SendResponse(e.StatusCode, new ErrorPayload
+            var webException = e.GetInnerException<WebException>();
+            if (webException != null)
             {
-                Message = e.Message,
-            });
+                Logging.LogError(
+                    new Dictionary<string, string>()
+                    {
+                    { "METHOD", context.Request.Method },
+                    { "PATH", context.Request.Path },
+                    { "STATUS", webException.StatusCode.ToString() },
+                    }, $"Failed to handle request: {e}\n{e.StackTrace}");
+
+                await context.SendResponse(webException.StatusCode, new ErrorPayload
+                {
+                    Message = e.Message,
+                });
+            }
+            else
+            {
+                Logging.LogError(
+                    new Dictionary<string, string>()
+                    {
+                    { "METHOD", context.Request.Method },
+                    { "PATH", context.Request.Path },
+                    }, $"Failed to handle request: {e}\n{e.StackTrace}");
+
+                await context.SendResponse(HttpStatusCode.InternalServerError, new ErrorPayload
+                {
+                    Message = e.Message,
+                });
+            }
+
             return true;
         }
     }

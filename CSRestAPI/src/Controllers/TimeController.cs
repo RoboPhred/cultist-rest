@@ -66,7 +66,7 @@ namespace CSRestAPI.Controllers
                 }
             });
 
-            await Settler.Settle();
+            await Settler.AwaitSettled();
 
             await context.SendResponse(HttpStatusCode.OK);
         }
@@ -88,7 +88,7 @@ namespace CSRestAPI.Controllers
                 heart.Beat(payload.Seconds, 0);
             });
 
-            await Settler.Settle();
+            await Settler.AwaitSettled();
 
             await context.SendResponse(HttpStatusCode.OK);
         }
@@ -152,7 +152,7 @@ namespace CSRestAPI.Controllers
                 heart.Beat(timeToBeat, 0);
             });
 
-            await Settler.Settle();
+            await Settler.AwaitSettled();
 
             await context.SendResponse(HttpStatusCode.OK, new
             {

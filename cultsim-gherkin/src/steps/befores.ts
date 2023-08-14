@@ -1,8 +1,22 @@
 import { Before } from "@cucumber/cucumber";
 
-import { del, get, post } from "../api.js";
+import { APIError, del, get, post } from "../api.js";
 
-Before("not @preservePreviousState", async () => {
+Before(async () => {
   await post("/time/speed", { speed: "Paused" });
-  await del("/by-path/~/tabletop/tokens");
+});
+
+Before("not (@preservePreviousState or @noStateReset)", async () => {
+  try {
+    await del("/by-path/~/tabletop/tokens");
+  } catch (err: any) {
+    if (err instanceof APIError) {
+      if (err.statusCode === 404 && err.message.includes("No sphere found")) {
+        // Table doesnt exist.  That's fine.
+        return;
+      }
+    }
+
+    throw err;
+  }
 });

@@ -56,6 +56,10 @@ namespace CSRestAPI.Payloads
         public Token Create(Sphere sphere)
         {
             var token = sphere.ProvisionElementToken(this.ElementId, this.Quantity);
+            if (!token.IsValid())
+            {
+                throw new InternalServerErrorException($"Failed to create element stack for element ID ${this.ElementId}.");
+            }
 
             if (this.Mutations != null && this.Mutations.Count > 0)
             {
