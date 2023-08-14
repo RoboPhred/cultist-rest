@@ -7,6 +7,43 @@ import {
   getVerbThresholdSphereOrFail,
 } from "../../utils.js";
 
+Given(/^I have a(?:n?) (\S+) card on the tabletop$/, (elementId: string) => {
+  try {
+    return post(`by-path/~/tabletop/tokens`, {
+      payloadType: "ElementStack",
+      elementId,
+      quantity: 1,
+    });
+  } catch (err: any) {
+    throwForStatus(err, {
+      [HttpStatusCodes.NOT_FOUND]: `Could not find the tabletop sphere.`,
+      [HttpStatusCodes.BAD_REQUEST]: `The element ${elementId} could not be created.`,
+    });
+
+    throw err;
+  }
+});
+
+Given(
+  /^I have (\d+) (\S+) card on the tabletop$/,
+  (quantity: string, elementId: string) => {
+    try {
+      return post(`by-path/~/tabletop/tokens`, {
+        payloadType: "ElementStack",
+        elementId,
+        quantity: Number(quantity),
+      });
+    } catch (err: any) {
+      throwForStatus(err, {
+        [HttpStatusCodes.NOT_FOUND]: `Could not find the tabletop sphere.`,
+        [HttpStatusCodes.BAD_REQUEST]: `The element ${elementId} could not be created.`,
+      });
+
+      throw err;
+    }
+  }
+);
+
 Given(
   /^I have a(?:n?) (\S+) card on the (\S+) sphere$/,
   (elementId: string, spherePath: string) => {

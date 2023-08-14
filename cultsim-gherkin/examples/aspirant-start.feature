@@ -53,3 +53,26 @@ Feature: Aspirant Legacy
       | reason       | 1        |
       | bequestintro | 1        |
       | funds        | 9        |
+
+  Scenario: Study bequest with Reason starts
+    Given I have a study verb on the tabletop
+    And I have a bequestintro card on the tabletop
+    And I have a reason card on the tabletop
+    When I drag the bequestintro card to the study verb study slot
+    And I drag the reason card to the study verb approach slot
+    And I start the study verb
+    Then the started recipe should be studybequestreason
+    And the study verb should have 30 seconds remaining
+
+  @preservePreviousState
+  Scenario: Study Bequest with Reason completes
+    When 30 seconds have elapsed
+    Then the time verb should be available
+    And the time verb should be on the needs recipe
+    And the study verb should contain the following output:
+      | elementId               | quantity |
+      | reason                  | 1        |
+      | fragmentlantern         | 1        |
+      | contactintro            | 1        |
+      | ascensionenlightenmenta | 1        |
+      | mapbookdealer           | 1        |
