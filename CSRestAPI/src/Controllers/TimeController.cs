@@ -47,16 +47,26 @@ namespace CSRestAPI.Controllers
 
             await Dispatcher.RunOnMainThread(() =>
             {
-                // Unpause from the user's pause level if needed.
-                Watchman.Get<LocalNexus>().UnPauseGame(true);
-
-                var controlEventArgs = new SpeedControlEventArgs()
+                if (payload.GameSpeed == SecretHistories.Enums.GameSpeed.Paused)
                 {
-                    ControlPriorityLevel = 1,
-                    GameSpeed = payload.GameSpeed,
-                };
-                Watchman.Get<LocalNexus>().SpeedControlEvent.Invoke(controlEventArgs);
+                    // Pause the game at the user's pause level.
+                    Watchman.Get<LocalNexus>().PauseGame(true);
+                }
+                else
+                {
+                    // Unpause from the user's pause level if needed.
+                    Watchman.Get<LocalNexus>().UnPauseGame(true);
+
+                    var controlEventArgs = new SpeedControlEventArgs()
+                    {
+                        ControlPriorityLevel = 1,
+                        GameSpeed = payload.GameSpeed,
+                    };
+                    Watchman.Get<LocalNexus>().SpeedControlEvent.Invoke(controlEventArgs);
+                }
             });
+
+            await Settler.Settle();
 
             await context.SendResponse(HttpStatusCode.OK);
         }
@@ -77,6 +87,8 @@ namespace CSRestAPI.Controllers
                 var heart = Watchman.Get<Heart>();
                 heart.Beat(payload.Seconds, 0);
             });
+
+            await Settler.Settle();
 
             await context.SendResponse(HttpStatusCode.OK);
         }
@@ -139,6 +151,8 @@ namespace CSRestAPI.Controllers
                 var heart = Watchman.Get<Heart>();
                 heart.Beat(timeToBeat, 0);
             });
+
+            await Settler.Settle();
 
             await context.SendResponse(HttpStatusCode.OK, new
             {

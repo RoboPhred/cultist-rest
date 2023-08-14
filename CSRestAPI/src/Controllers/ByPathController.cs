@@ -77,6 +77,8 @@ namespace CSRestAPI.Controllers
                     sphere => throw new BadRequestException("Cannot update a sphere."));
             });
 
+            await Settler.Settle();
+
             await context.SendResponse(HttpStatusCode.OK, result);
         }
 
@@ -95,6 +97,8 @@ namespace CSRestAPI.Controllers
                     token => token.Retire(),
                     sphere => throw new BadRequestException("Cannot delete a sphere."));
             });
+
+            await Settler.Settle();
 
             await context.SendResponse(HttpStatusCode.OK);
         }
@@ -187,6 +191,8 @@ namespace CSRestAPI.Controllers
                     });
             });
 
+            await Settler.Settle();
+
             await context.SendResponse(HttpStatusCode.Created, result);
         }
 
@@ -218,6 +224,8 @@ namespace CSRestAPI.Controllers
                     }
                 }
             });
+
+            await Settler.Settle();
 
             await context.SendResponse(HttpStatusCode.OK);
         }
@@ -257,6 +265,8 @@ namespace CSRestAPI.Controllers
                 };
             });
 
+            await Settler.Settle();
+
             await context.SendResponse(HttpStatusCode.OK, result);
         }
 
@@ -291,6 +301,8 @@ namespace CSRestAPI.Controllers
 
                 return outputResult;
             });
+
+            await Settler.Settle();
 
             await context.SendResponse(HttpStatusCode.OK, result);
         }
