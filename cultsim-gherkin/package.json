@@ -5,7 +5,7 @@
   "description": "Gherkin test support for Cultist Simulator",
   "main": "lib/index.js",
   "bin": {
-    "cultsim-gherkin": "./dist/cli.js"
+    "cscucumber": "./dist/cli.js"
   },
   "scripts": {
     "clean": "rimraf lib",
@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "@cucumber/cucumber": "^9.4.0",
+    "http-status-codes": "^2.2.0",
     "lodash": "^4.17.21",
     "node-fetch": "^3.2.8"
   }

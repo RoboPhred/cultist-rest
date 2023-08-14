@@ -2,6 +2,30 @@ import fetch, { Response } from "node-fetch";
 
 const endpoint = "http://localhost:8081/api";
 
+export class APIError extends Error {
+  public statusCode: number;
+
+  constructor(statusCode: number, message: string) {
+    super(message);
+    this.name = this.constructor.name;
+    this.statusCode = statusCode;
+
+    // This is to ensure the instanceof check works correctly, since TypeScript transpilation might break prototype chain.
+    Object.setPrototypeOf(this, APIError.prototype);
+  }
+}
+
+export function throwForStatus(err: Error, messages: Record<number, string>) {
+  if (err instanceof APIError) {
+    const message = messages[err.statusCode];
+    if (message) {
+      throw new Error(
+        `${message} (server returned ${err.statusCode} ${err.message})`
+      );
+    }
+  }
+}
+
 export function getUrl(path: string) {
   if (path.startsWith("/")) {
     path = path.substring(1);
@@ -61,7 +85,7 @@ export async function del(path: string) {
 
 async function handleResponse(response: Response) {
   if (response.status >= 400) {
-    throw new Error(`${response.status}: ${response.statusText}`);
+    throw new APIError(response.status, response.statusText);
   }
 
   if (response.headers.get("Content-Type")?.startsWith("application/json")) {
