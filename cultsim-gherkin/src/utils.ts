@@ -26,6 +26,12 @@ export async function getVerbThresholdSphereOrFail(
   return targetSphere;
 }
 
+export async function getAllElementsFromSphere(spherePath: string) {
+  return (await get(
+    `by-path/${spherePath}/tokens?payloadType=ElementStack`
+  )) as any[];
+}
+
 export async function getElementStackByElementIdFromSphereOrFail(
   elementId: string,
   spherePath: string
@@ -40,4 +46,22 @@ export async function getElementStackByElementIdFromSphereOrFail(
   }
 
   return candidates[0];
+}
+
+export function elementAspectsMatch(
+  element: any,
+  aspects: Record<string, number>
+) {
+  for (const aspectName of Object.keys(aspects)) {
+    const aspectAmount = aspects[aspectName];
+
+    const elementAspectAmount =
+      element.mutations[aspectName] ?? element.elementAspects[aspectName] ?? 0;
+
+    if (elementAspectAmount !== aspectAmount) {
+      return false;
+    }
+  }
+
+  return true;
 }

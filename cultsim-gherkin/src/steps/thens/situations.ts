@@ -4,6 +4,8 @@ import { DataTable, Then } from "@cucumber/cucumber";
 
 import { CultistSimulatorWorld } from "../../world.js";
 import {
+  elementAspectsMatch,
+  getAllElementsFromSphere,
   getElementStackByElementIdFromSphereOrFail,
   getVerbFromTabletopOrFail,
 } from "../../utils.js";
@@ -50,5 +52,28 @@ Then(
       );
       assert.equal(token.quantity, Number(quantity));
     }
+  }
+);
+
+Then(
+  /^the (\S+) verb should contain an output card with the following aspects:$/,
+  async (verbId: string, dataTable: DataTable) => {
+    const situation = await getVerbFromTabletopOrFail(verbId);
+    const targetSphere = situation.path + "/outputsphere";
+    const elements = await getAllElementsFromSphere(targetSphere);
+
+    const reqs = dataTable.hashes();
+    const aspects = reqs.reduce((obj, req) => {
+      obj[req.aspect] = Number(req.amount);
+      return obj;
+    }, {} as Record<string, number>);
+
+    for (const element of elements) {
+      if (elementAspectsMatch(element, aspects)) {
+        return;
+      }
+    }
+
+    throw new Error("No card in the sphere matched the aspects.");
   }
 );
