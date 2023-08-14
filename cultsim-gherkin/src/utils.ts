@@ -12,6 +12,17 @@ export async function getVerbFromTabletop(verbId: string) {
   return candidateVerbs[0];
 }
 
+export async function getVerbThresholdSphere(verbId: string, slotId: string) {
+  const verb = await getVerbFromTabletop(verbId);
+  const verbSpheres = (await get(`by-path/${verb.path}/spheres`)) as any[];
+  const targetSphere = verbSpheres.find((x) => x.path.endsWith("/" + slotId));
+  if (!targetSphere) {
+    throw new Error(`No slot found with id ${slotId} in verb ${verbId}`);
+  }
+
+  return targetSphere;
+}
+
 export async function getElementStackByElementIdFromTabletop(
   elementId: string,
   spherePath: string

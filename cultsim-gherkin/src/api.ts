@@ -6,7 +6,7 @@ export class APIError extends Error {
   public statusCode: number;
 
   constructor(statusCode: number, message: string) {
-    super(message);
+    super(`${statusCode}: ${message}`);
     this.name = this.constructor.name;
     this.statusCode = statusCode;
 
@@ -23,6 +23,8 @@ export function throwForStatus(err: Error, messages: Record<number, string>) {
         `${message} (server returned ${err.statusCode} ${err.message})`
       );
     }
+  } else {
+    console.log(err, "is not api error");
   }
 }
 

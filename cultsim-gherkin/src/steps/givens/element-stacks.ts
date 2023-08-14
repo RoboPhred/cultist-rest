@@ -1,10 +1,10 @@
 import { Given } from "@cucumber/cucumber";
 import HttpStatusCodes from "http-status-codes";
 
-import { APIError, get, post, put, throwForStatus } from "../../api.js";
+import { post, put, throwForStatus } from "../../api.js";
 import {
   getElementStackByElementIdFromTabletop,
-  getVerbFromTabletop,
+  getVerbThresholdSphere,
 } from "../../utils.js";
 
 Given(
@@ -85,22 +85,23 @@ Given(
 
 Given(
   /^I drag the (\S+) card to the (\S+) verb (\S+) slot$/,
-  async (elementId: string, verbId: string, slot: string) => {
-    const verbPath = (await getVerbFromTabletop(verbId)).path;
+  async (elementId: string, verbId: string, slotId: string) => {
+    const targetSphere = await getVerbThresholdSphere(verbId, slotId);
 
-    const candidatePath = getElementStackByElementIdFromTabletop(
-      elementId,
-      "~/tabletop"
-    );
+    const candidatePath = (
+      await getElementStackByElementIdFromTabletop(elementId, "~/tabletop")
+    ).path as string;
 
-    const verbSpheres = (await get(`by-path/${verbPath}/spheres`)) as any[];
-    const targetSphere = verbSpheres.find((x) => x.path.endsWith("/" + slot));
-    if (!targetSphere) {
-      throw new Error(`No slot found with id ${slot} in verb ${verbId}`);
+    try {
+      await put(`by-path/${candidatePath}`, {
+        spherePath: targetSphere.path,
+      });
+    } catch (err: any) {
+      throwForStatus(err, {
+        [HttpStatusCodes.CONFLICT]: `The ${verbId} slot ${slotId} rejected the ${elementId} card.`,
+      });
+
+      throw err;
     }
-
-    await put(`by-path/${candidatePath}`, {
-      spherePath: targetSphere.path,
-    });
   }
 );
