@@ -142,7 +142,7 @@ namespace CSRestAPI.Controllers
 
             await context.SendResponse(HttpStatusCode.OK, new
             {
-                timeToBeat,
+                secondsElapsed = timeToBeat,
             });
         }
 

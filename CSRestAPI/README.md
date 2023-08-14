@@ -64,7 +64,7 @@ Rest API server for interfacing with Cultist Simulator
       - Description: Quantity of the element to create a stack of.
     - **mutations** (type: `object`, optional)
       - Description: Mutations to apply to the element stack.
-      - Default: `{}` (empty dictionai/ry)
+      - Default: `{}` (empty dictionary)
       - Example:
         ```json
         {
@@ -124,8 +124,6 @@ Rest API server for interfacing with Cultist Simulator
   - 404 Not Found: If the sphere is not found.
   - 400 Bad Request: If the path resolves to something other than a sphere.
 
-# Game API Documentation
-
 ## Game Speed
 
 ### GET /speed
@@ -175,8 +173,8 @@ Rest API server for interfacing with Cultist Simulator
 - **Response**:
   ```json
   {
-    "nextCardTime": 5,
-    "nextVerbTime": 7
+    "nextCardTime": 5.2,
+    "nextVerbTime": 7.6
   }
   ```
 - **Response**: `200 OK`
@@ -194,7 +192,7 @@ Rest API server for interfacing with Cultist Simulator
 - **Response**:
   ```json
   {
-    "timeToBeat": 5
+    "secondsElapsed": 5.3
   }
   ```
 - **Response**: `200 OK`
@@ -224,7 +222,9 @@ Tokens contain the following properties
 - **Type**: `string`
 - **Description**: The path of the sphere this token is contained in.
 - **Example**: `"~tabletop"`
-- **Read-only**
+- **Readable**
+- **Writable**
+- **Notes**: If the sphere rejects the token, 409 Conflict will be returned. This may cause some of the other properties in your request to not be set.
 
 #### `payloadType`
 
@@ -238,7 +238,7 @@ Tokens contain the following properties
 
 ## ElementStack JSON Format
 
-In addition to handling Token JSON properties, situation tokens can handle the following properties.
+In addition to handling Token JSON properties, ElementStack tokens can handle the following properties.
 
 ### Properties
 
@@ -273,13 +273,17 @@ In addition to handling Token JSON properties, situation tokens can handle the f
 
 - **Type**: `JObject`
 - **Description**: The mutations of the element stack.
-- **Example**: `{ "MutationA": 3, "MutationB": 4 }`
+- **Example**: `{ "lantern": 3, "winter": 4 }`
+- **Readable**
+- **Writable**
 
 #### `shrouded`
 
 - **Type**: `bool`
 - **Description**: Indicates if the token is shrouded.
 - **Example**: `true`
+- **Readable**
+- **Writable**
 
 #### `label`
 
