@@ -1,8 +1,14 @@
 #!/usr/bin/env node
 import { fileURLToPath } from "url";
 import path from "path";
+import minimist from "minimist";
 
 const dirName = path.dirname(fileURLToPath(import.meta.url));
+
+const argv = minimist(process.argv.slice(2));
+
+const names: string[] =
+  argv["name"] && Array.isArray(argv["name"]) ? argv["name"] : [argv["name"]];
 
 import {
   IRunConfiguration,
@@ -16,6 +22,7 @@ async function run() {
     ...loadedRunConfig,
     sources: {
       ...loadedRunConfig.sources,
+      names: names ?? loadedRunConfig.sources.names,
       paths: [...loadedRunConfig.sources.paths, "./**/*.feature"],
     },
     support: {
@@ -23,11 +30,7 @@ async function run() {
       importPaths: [
         ...loadedRunConfig.support.importPaths,
         path.join(dirName, "bootstrap.js"),
-        path.join(dirName, "steps", "befores.js"),
-        path.join(dirName, "steps", "givens", "element-stacks.js"),
-        path.join(dirName, "steps", "givens", "situations.js"),
-        path.join(dirName, "steps", "whens", "situations.js"),
-        path.join(dirName, "steps", "thens", "situations.js"),
+        path.join(dirName, "steps", "**", "*.js"),
       ],
     },
   };

@@ -1,6 +1,6 @@
 import { get } from "./api.js";
 
-export async function getVerbFromTabletop(verbId: string) {
+export async function getVerbFromTabletopOrFail(verbId: string) {
   const candidateVerbs = (await get(
     `by-path/~/tabletop/tokens?payloadType=Situation&entityId=${verbId}`
   )) as any[];
@@ -12,8 +12,11 @@ export async function getVerbFromTabletop(verbId: string) {
   return candidateVerbs[0];
 }
 
-export async function getVerbThresholdSphere(verbId: string, slotId: string) {
-  const verb = await getVerbFromTabletop(verbId);
+export async function getVerbThresholdSphereOrFail(
+  verbId: string,
+  slotId: string
+) {
+  const verb = await getVerbFromTabletopOrFail(verbId);
   const verbSpheres = (await get(`by-path/${verb.path}/spheres`)) as any[];
   const targetSphere = verbSpheres.find((x) => x.path.endsWith("/" + slotId));
   if (!targetSphere) {
@@ -23,12 +26,12 @@ export async function getVerbThresholdSphere(verbId: string, slotId: string) {
   return targetSphere;
 }
 
-export async function getElementStackByElementIdFromTabletop(
+export async function getElementStackByElementIdFromSphereOrFail(
   elementId: string,
   spherePath: string
 ) {
   const candidates = (await get(
-    `by-path/${spherePath}/tokens?entityId=${elementId}`
+    `by-path/${spherePath}/tokens?payloadType=ElementStack&entityId=${elementId}`
   )) as any[];
   if (!candidates.length) {
     throw new Error(

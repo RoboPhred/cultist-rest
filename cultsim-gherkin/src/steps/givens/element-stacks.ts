@@ -3,8 +3,8 @@ import HttpStatusCodes from "http-status-codes";
 
 import { post, put, throwForStatus } from "../../api.js";
 import {
-  getElementStackByElementIdFromTabletop,
-  getVerbThresholdSphere,
+  getElementStackByElementIdFromSphereOrFail,
+  getVerbThresholdSphereOrFail,
 } from "../../utils.js";
 
 Given(
@@ -56,7 +56,7 @@ Given(
     let targetToken: any;
 
     try {
-      targetToken = getElementStackByElementIdFromTabletop(
+      targetToken = getElementStackByElementIdFromSphereOrFail(
         elementId,
         fromSpherePath
       );
@@ -86,10 +86,10 @@ Given(
 Given(
   /^I drag the (\S+) card to the (\S+) verb (\S+) slot$/,
   async (elementId: string, verbId: string, slotId: string) => {
-    const targetSphere = await getVerbThresholdSphere(verbId, slotId);
+    const targetSphere = await getVerbThresholdSphereOrFail(verbId, slotId);
 
     const candidatePath = (
-      await getElementStackByElementIdFromTabletop(elementId, "~/tabletop")
+      await getElementStackByElementIdFromSphereOrFail(elementId, "~/tabletop")
     ).path as string;
 
     try {

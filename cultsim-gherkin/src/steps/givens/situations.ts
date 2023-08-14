@@ -1,7 +1,7 @@
 import { Given } from "@cucumber/cucumber";
 import HttpStatusCodes from "http-status-codes";
 
-import { post, throwForStatus } from "../../api.js";
+import { get, post, throwForStatus } from "../../api.js";
 
 Given(
   /^I have a(?:n?) (\S+) verb on the (\S+) sphere$/,
@@ -39,3 +39,14 @@ Given(
     }
   }
 );
+
+Given("all situations are concluded", async () => {
+  const situations = (await get(
+    "/by-path/~/tabletop/tokens?payloadType=Situation"
+  )) as any[];
+  for (const situation of situations) {
+    if (situation.state == "Complete") {
+      await post(`/by-path/${situation.path}/conclude`, {});
+    }
+  }
+});

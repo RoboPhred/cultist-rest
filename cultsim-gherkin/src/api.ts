@@ -87,7 +87,7 @@ export async function del(path: string) {
 
 async function handleResponse(response: Response) {
   if (response.status >= 400) {
-    throw new APIError(response.status, response.statusText);
+    throw new APIError(response.status, await response.text());
   }
 
   if (response.headers.get("Content-Type")?.startsWith("application/json")) {
