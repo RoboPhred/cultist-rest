@@ -88,6 +88,30 @@ Rest API server for interfacing with Cultist Simulator
   - 404 Not Found: If the sphere is not found.
   - 400 Bad Request: If the request body is invalid, or if the path resolves to something other than a sphere.
 
+### Execute a verb with its current contents
+
+- **URL**: `/api/by-path/{...path}/execute`
+- **METHOD**: `POST`
+- **Response**:
+  - **Code**: 200 OK
+  - **Content**: A JSON object containing the results of the execution
+    - `executedRecipeId`: The id of the recipe that executed.
+    - `executedRecipeLabel`: The label of the recipe that executed.
+- **Exceptions**:
+  - 404 Not Found: If the path does not resolve to a situation token.
+  - 409 Conflict: If the verb is not in an appropriate state to start a recipe, or the recipe fails to start.
+
+### Conclude a finished verb
+
+- **URL**: `/api/by-path/{...path}/conclude`
+- **METHOD**: `POST`
+- **Response**:
+  - **Code**: 200 OK
+  - **Content**: A JSON array containing all tokens that were contained by the situation's output sphere.
+- **Exceptions**:
+  - 404 Not Found: If the path does not resolve to a situation token.
+  - 409 Conflict: If the verb is not in an appropriate state to conclude.
+
 ### Modify a Token
 
 - **URL**: `/api/by-path/{...path}`

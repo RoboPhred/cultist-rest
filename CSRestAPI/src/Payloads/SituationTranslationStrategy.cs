@@ -89,6 +89,22 @@ namespace CSRestAPI.Payloads
         }
 
         /// <summary>
+        /// Gets the fallback recipe label.
+        /// </summary>
+        /// <param name="situation">The situation.</param>
+        /// <returns>The fallback recipe label.</returns>
+        [JsonPropertyGetter("recipeLabel")]
+        public string GetFallbackRecipeName(Situation situation)
+        {
+            if (!situation.FallbackRecipe.IsValid())
+            {
+                return null;
+            }
+
+            return situation.FallbackRecipe.Label;
+        }
+
+        /// <summary>
         /// Gets the recipe ID of the situation's current recipe.
         /// </summary>
         /// <param name="situation">The situation.</param>
@@ -102,6 +118,22 @@ namespace CSRestAPI.Payloads
             }
 
             return situation.CurrentRecipe.Id;
+        }
+
+        /// <summary>
+        /// Gets the current recipe label.
+        /// </summary>
+        /// <param name="situation">The situation.</param>
+        /// <returns>The current recipe label.</returns>
+        [JsonPropertyGetter("currentRecipeLabel")]
+        public string GetCurrentRecipeLabel(Situation situation)
+        {
+            if (!situation.CurrentRecipe.IsValid())
+            {
+                return null;
+            }
+
+            return situation.CurrentRecipe.Label;
         }
 
         /// <summary>

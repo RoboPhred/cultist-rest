@@ -231,7 +231,7 @@ namespace CSRestAPI.Controllers
         [WebRouteMethod(Method = "POST", Path = "**path/execute")]
         public async Task ExecuteSituationAtPath(IHttpContext context, string path)
         {
-            var executedRecipeId = await Dispatcher.RunOnMainThread(() =>
+            var result = await Dispatcher.RunOnMainThread(() =>
             {
                 var situation = new FucinePath(path).GetPayload<Situation>();
                 if (situation == null)
@@ -250,10 +250,14 @@ namespace CSRestAPI.Controllers
                     throw new ConflictException($"Situation {situation.VerbId} could not begin it's recipe.");
                 }
 
-                return situation.FallbackRecipeId;
+                return new
+                {
+                    executedRecipeId = situation.FallbackRecipe.Id,
+                    executedRecipeLabel = situation.FallbackRecipe.Label,
+                };
             });
 
-            await context.SendResponse(HttpStatusCode.OK, new { executedRecipeId });
+            await context.SendResponse(HttpStatusCode.OK, result);
         }
 
         /// <summary>
@@ -265,7 +269,7 @@ namespace CSRestAPI.Controllers
         [WebRouteMethod(Method = "POST", Path = "**path/conclude")]
         public async Task ConcludeSituationAtPath(IHttpContext context, string path)
         {
-            await Dispatcher.RunOnMainThread(() =>
+            var result = await Dispatcher.RunOnMainThread(() =>
             {
                 var situation = new FucinePath(path).GetPayload<Situation>();
                 if (situation == null)
@@ -278,10 +282,17 @@ namespace CSRestAPI.Controllers
                     throw new ConflictException($"Situation {situation.VerbId} is not in the correct state to conclude.");
                 }
 
+                var outputResult = (from sphere in situation.GetSpheresByCategory(SecretHistories.Enums.SphereCategory.Output)
+                                    from token in sphere.GetTokens()
+                                    let json = this.TokenToJObject(token)
+                                    select json).ToArray();
+
                 situation.Conclude();
+
+                return outputResult;
             });
 
-            await context.SendResponse(HttpStatusCode.OK);
+            await context.SendResponse(HttpStatusCode.OK, result);
         }
 
         private JToken CreateSphereToken(Sphere sphere, JObject payload)

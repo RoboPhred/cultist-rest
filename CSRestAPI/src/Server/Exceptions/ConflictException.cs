@@ -20,7 +20,7 @@ namespace CSRestAPI.Server.Exceptions
         /// </summary>
         /// <param name="message">The error message.</param>
         public ConflictException(string message)
-            : base(HttpStatusCode.BadRequest, message)
+            : base(HttpStatusCode.Conflict, message)
         {
         }
     }
