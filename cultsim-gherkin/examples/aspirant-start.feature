@@ -1,6 +1,6 @@
 Feature: Aspirant Legacy
   Scenario: Start the Aspirant Legacy
-    Given I start a new aspirant legacy
+    When I start a new aspirant legacy
     Then the tabletop should have the following cards:
       | elementId | quantity |
       | introjob  | 1        |
@@ -37,9 +37,6 @@ Feature: Aspirant Legacy
     And the study verb should have 40 seconds remaining
 
   @preservePreviousState
-  # FIXME: This will fail if this is not the first time the test has ran on the same save.
-  # We need to start a new legacy at the start of this sequence
-  # Or at least lobotomize seen recipes (and cards, and decks...).
   Scenario: The Bequest Arrival starts
     When 40 seconds have elapsed
     Then the study verb should be on the bequestarrives recipe

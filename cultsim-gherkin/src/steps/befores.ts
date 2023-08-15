@@ -4,7 +4,7 @@ import { fileURLToPath } from "url";
 
 import { Before } from "@cucumber/cucumber";
 
-import { post, put } from "../api.js";
+import { api } from "../api.js";
 
 const dirName = path.dirname(fileURLToPath(import.meta.url));
 const emptyGameState = JSON.parse(
@@ -12,11 +12,9 @@ const emptyGameState = JSON.parse(
 );
 
 Before("not (@preservePreviousState or @noStateReset)", async () => {
-  await put("/game-state", {
-    gameState: emptyGameState,
-  });
+  await api.loadGameState(emptyGameState);
 });
 
 Before(async () => {
-  await post("/time/speed", { speed: "Paused" });
+  await api.setSpeed("Paused");
 });

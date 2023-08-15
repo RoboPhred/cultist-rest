@@ -1,34 +1,38 @@
 import { Given } from "@cucumber/cucumber";
 import HttpStatusCodes from "http-status-codes";
 
-import { post, put, throwForStatus } from "../../api.js";
+import { api, throwForStatus } from "../../api.js";
 import {
   getElementStackByElementIdFromSphereOrFail,
   getVerbThresholdSphereOrFail,
 } from "../../utils.js";
+import { GetTokenResponse } from "cultsim-api";
 
-Given(/^I have a(?:n?) (\S+) card on the tabletop$/, (elementId: string) => {
-  try {
-    return post(`by-path/~/tabletop/tokens`, {
-      payloadType: "ElementStack",
-      elementId,
-      quantity: 1,
-    });
-  } catch (err: any) {
-    throwForStatus(err, {
-      [HttpStatusCodes.NOT_FOUND]: `Could not find the tabletop sphere.`,
-      [HttpStatusCodes.BAD_REQUEST]: `The element ${elementId} could not be created.`,
-    });
+Given(
+  /^I have a(?:n?) (\S+) card on the tabletop$/,
+  async (elementId: string) => {
+    try {
+      await api.createTokensAtPath("~/tabletop", {
+        payloadType: "ElementStack",
+        elementId,
+        quantity: 1,
+      });
+    } catch (err: any) {
+      throwForStatus(err, {
+        [HttpStatusCodes.NOT_FOUND]: `Could not find the tabletop sphere.`,
+        [HttpStatusCodes.BAD_REQUEST]: `The element ${elementId} could not be created.`,
+      });
 
-    throw err;
+      throw err;
+    }
   }
-});
+);
 
 Given(
   /^I have (\d+) (\S+) card on the tabletop$/,
-  (quantity: string, elementId: string) => {
+  async (quantity: string, elementId: string) => {
     try {
-      return post(`by-path/~/tabletop/tokens`, {
+      await api.createTokensAtPath("~/tabletop", {
         payloadType: "ElementStack",
         elementId,
         quantity: Number(quantity),
@@ -46,9 +50,9 @@ Given(
 
 Given(
   /^I have a(?:n?) (\S+) card on the (\S+) sphere$/,
-  (elementId: string, spherePath: string) => {
+  async (elementId: string, spherePath: string) => {
     try {
-      return post(`by-path/${spherePath}/tokens`, {
+      await api.createTokensAtPath(spherePath, {
         payloadType: "ElementStack",
         elementId,
         quantity: 1,
@@ -66,15 +70,12 @@ Given(
 
 Given(
   /^I have (\d+) (\S+) cards on the (\S+) sphere$/,
-  (quantity: number, elementId: string, spherePath: string) => {
-    if (quantity <= 0) {
-      throw new Error("Quantity must be greater than zero.");
-    }
-
+  async (quantity: number, elementId: string, spherePath: string) => {
     try {
-      post(`by-path/${spherePath}/tokens`, {
+      await api.createTokensAtPath(spherePath, {
+        payloadType: "ElementStack",
         elementId,
-        quantity,
+        quantity: Number(quantity),
       });
     } catch (err: any) {
       throwForStatus(err, {
@@ -90,10 +91,10 @@ Given(
 Given(
   /^I drag the (\S+) card from the (\S+) sphere to the (\S+) sphere$/,
   async (elementId: string, fromSpherePath: string, toSpherePath: string) => {
-    let targetToken: any;
+    let targetToken: GetTokenResponse;
 
     try {
-      targetToken = getElementStackByElementIdFromSphereOrFail(
+      targetToken = await getElementStackByElementIdFromSphereOrFail(
         elementId,
         fromSpherePath
       );
@@ -106,7 +107,7 @@ Given(
     }
 
     try {
-      await put(`by-path/${targetToken}`, {
+      await api.updateTokenAtPath(targetToken.path, {
         spherePath: toSpherePath,
       });
     } catch (err: any) {
@@ -130,7 +131,7 @@ Given(
     ).path as string;
 
     try {
-      await put(`by-path/${candidatePath}`, {
+      await api.updateTokenAtPath(candidatePath, {
         spherePath: targetSphere.path,
       });
     } catch (err: any) {

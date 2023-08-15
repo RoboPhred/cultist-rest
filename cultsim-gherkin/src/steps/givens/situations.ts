@@ -1,11 +1,12 @@
 import { Given } from "@cucumber/cucumber";
 import HttpStatusCodes from "http-status-codes";
 
-import { get, post, throwForStatus } from "../../api.js";
+import { api, throwForStatus } from "../../api.js";
+import { getAllVerbsFromTabletop } from "../../utils.js";
 
-Given(/^I have a(?:n?) (\S+) verb on the tabletop$/, (verbId: string) => {
+Given(/^I have a(?:n?) (\S+) verb on the tabletop$/, async (verbId: string) => {
   try {
-    return post(`by-path/~tabletop/tokens`, {
+    await api.createTokensAtPath("~/tabletop", {
       payloadType: "Situation",
       verbId,
     });
@@ -21,9 +22,9 @@ Given(/^I have a(?:n?) (\S+) verb on the tabletop$/, (verbId: string) => {
 
 Given(
   /^I have a(?:n?) (\S+) verb in the (\S+) sphere$/,
-  (verbId: string, spherePath: string) => {
+  async (verbId: string, spherePath: string) => {
     try {
-      return post(`by-path/${spherePath}/tokens`, {
+      await api.createTokensAtPath(spherePath, {
         payloadType: "Situation",
         verbId,
       });
@@ -40,9 +41,9 @@ Given(
 
 Given(
   /^I have a(?:n?) (\S+) verb in the (\S+) sphere with the recipe (\S+)$/,
-  (verbId: string, spherePath: string, recipeId: string) => {
+  async (verbId: string, spherePath: string, recipeId: string) => {
     try {
-      return post(`by-path/${spherePath}/tokens`, {
+      await api.createTokensAtPath(spherePath, {
         payloadType: "Situation",
         verbId,
         recipeId,
@@ -59,12 +60,10 @@ Given(
 );
 
 Given("all situations are concluded", async () => {
-  const situations = (await get(
-    "/by-path/~/tabletop/tokens?payloadType=Situation"
-  )) as any[];
-  for (const situation of situations) {
-    if (situation.state == "Complete") {
-      await post(`/by-path/${situation.path}/conclude`, {});
-    }
-  }
+  const situations = await getAllVerbsFromTabletop();
+  await Promise.all(
+    situations
+      .filter((x) => x.state === "Complete")
+      .map((x) => api.concludeSituationAtPath(x.path))
+  );
 });

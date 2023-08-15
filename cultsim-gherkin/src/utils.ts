@@ -1,15 +1,17 @@
-import { get } from "./api.js";
+import { GetElementStackResponse, GetSituationResponse } from "cultsim-api";
+import { api } from "./api.js";
 
 export async function getVerbFromTabletopOrFail(verbId: string) {
-  const candidateVerbs = (await get(
-    `by-path/~/tabletop/tokens?payloadType=Situation&entityId=${verbId}`
-  )) as any[];
+  const candidateVerbs = await api.getTokensAtPath("~/tabletop", {
+    payloadType: "Situation",
+    entityId: verbId,
+  });
 
   if (!candidateVerbs.length) {
     throw new Error(`No verb found with id ${verbId}`);
   }
 
-  return candidateVerbs[0];
+  return candidateVerbs[0] as GetSituationResponse;
 }
 
 export async function getVerbThresholdSphereOrFail(
@@ -17,7 +19,8 @@ export async function getVerbThresholdSphereOrFail(
   slotId: string
 ) {
   const verb = await getVerbFromTabletopOrFail(verbId);
-  const verbSpheres = (await get(`by-path/${verb.path}/spheres`)) as any[];
+  const verbSpheres = await api.getSpheresAtPath(verb.path);
+
   const targetSphere = verbSpheres.find((x) => x.path.endsWith("/" + slotId));
   if (!targetSphere) {
     throw new Error(`No slot found with id ${slotId} in verb ${verbId}`);
@@ -26,26 +29,32 @@ export async function getVerbThresholdSphereOrFail(
   return targetSphere;
 }
 
+export async function getAllVerbsFromTabletop() {
+  return (await api.getTokensAtPath("~/tabletop", {
+    payloadType: "Situation",
+  })) as GetSituationResponse[];
+}
+
 export async function getAllElementsFromSphere(spherePath: string) {
-  return (await get(
-    `by-path/${spherePath}/tokens?payloadType=ElementStack`
-  )) as any[];
+  return api.getTokensAtPath(spherePath, { payloadType: "ElementStack" });
 }
 
 export async function getElementStackByElementIdFromSphereOrFail(
   elementId: string,
   spherePath: string
 ) {
-  const candidates = (await get(
-    `by-path/${spherePath}/tokens?payloadType=ElementStack&entityId=${elementId}`
-  )) as any[];
+  const candidates = await api.getTokensAtPath(spherePath, {
+    payloadType: "ElementStack",
+    entityId: elementId,
+  });
+
   if (!candidates.length) {
     throw new Error(
       `No element stack found with id ${elementId} in sphere ${spherePath}`
     );
   }
 
-  return candidates[0];
+  return candidates[0] as GetElementStackResponse;
 }
 
 export function elementAspectsMatch(
