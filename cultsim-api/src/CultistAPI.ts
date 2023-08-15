@@ -1,4 +1,4 @@
-import fetch, { RequestInit, Response } from "node-fetch";
+import fetch, { RequestInit } from "node-fetch";
 
 import { APIError } from "./errors.js";
 import {
