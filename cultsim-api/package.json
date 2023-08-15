@@ -1,0 +1,30 @@
+{
+  "name": "cultsim-api",
+  "version": "1.0.0",
+  "description": "Cult Simulator API access through the CSRestAPI mod.",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "types/index.d.ts",
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "tsc --build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/RoboPhred/cultist-rest.git"
+  },
+  "author": "RoboPhred",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RoboPhred/cultist-rest/issues"
+  },
+  "homepage": "https://github.com/RoboPhred/cultist-rest#readme",
+  "devDependencies": {
+    "@types/node": "^20.5.0",
+    "rimraf": "^5.0.1",
+    "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "node-fetch": "^3.2.8"
+  }
+}
