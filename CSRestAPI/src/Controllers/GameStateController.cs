@@ -51,7 +51,7 @@ namespace CSRestAPI.Controllers
         /// </summary>
         /// <param name="context">The HTTP request context.</param>
         /// <returns>A task that completes when the request is handled.</returns>
-        [WebRouteMethod(Method = "POST", Path = "new-legacy")]
+        [WebRouteMethod(Method = "PUT", Path = "legacy")]
         public async Task StartNewLegacy(IHttpContext context)
         {
             var payload = context.ParseBody<StartNewLegacyPayload>();
