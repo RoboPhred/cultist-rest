@@ -2,6 +2,7 @@ namespace CSRestAPI.Controllers
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Resources;
     using System.Threading.Tasks;
     using Ceen;
     using CSRestAPI.JsonTranslation;
@@ -13,6 +14,7 @@ namespace CSRestAPI.Controllers
     using SecretHistories.Fucine;
     using SecretHistories.Spheres;
     using SecretHistories.UI;
+    using UnityEngine;
 
     /// <summary>
     /// A controller dealing with Spheres.
@@ -53,6 +55,48 @@ namespace CSRestAPI.Controllers
             });
 
             await context.SendResponse(HttpStatusCode.OK, result);
+        }
+
+        /// <summary>
+        /// Gets the icon in png format from the token.
+        /// </summary>
+        /// <param name="context">The HTTP context of the request.</param>
+        /// <param name="path">The fucine path of the item to get the image of.</param>
+        /// <returns>A task that resolves when the request is completed.</returns>
+        [WebRouteMethod(Method = "GET", Path = "**path/icon.png")]
+        public async Task GetPathIcon(IHttpContext context, string path)
+        {
+            var result = await Dispatcher.RunOnMainThread(() =>
+            {
+                var sprite = new FucinePath(path).WithItemAtAbsolutePath(
+                    token =>
+                    {
+                        if (token.Payload is ElementStack stack)
+                        {
+                            return ResourcesManager.GetSpriteForElement(stack.Element.Id);
+                        }
+                        else if (token.Payload is Situation situation)
+                        {
+                            return ResourcesManager.GetSpriteForVerbLarge(situation.VerbId);
+                        }
+                        else
+                        {
+                            throw new BadRequestException("Cannot get icon for token payload type " + token.Payload.GetType().FullName);
+                        }
+                    },
+                    sphere => throw new BadRequestException("Cannot get icon for sphere."));
+
+                var rect = sprite.rect;
+                var spriteTexture = sprite.texture.ToReadable();
+                var newTexture = new Texture2D((int)rect.width, (int)rect.height);
+                newTexture.SetPixels(spriteTexture.GetPixels((int)rect.xMin, (int)rect.yMin, (int)rect.width, (int)rect.height));
+                newTexture.Apply();
+
+                return newTexture.EncodeToPNG();
+            });
+
+            context.Response.Headers.Add("Content-Type", "image/png");
+            await context.Response.WriteAllAsync(result);
         }
 
         /// <summary>

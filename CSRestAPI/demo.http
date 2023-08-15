@@ -17,7 +17,7 @@ GET http://localhost:8081/api/by-path/~/tabletop/tokens
 
 ###
 # Open the Sail verb
-PUT http://localhost:8081/api/by-path/~/tabletop/!mariner.localhost:8081/api/by-path/~/tabletop/!mariner.sail_0
+PUT http://localhost:8081/api/by-path/~/tabletop/!mariner.sail_0
 Content-Type: application/json
 
 {

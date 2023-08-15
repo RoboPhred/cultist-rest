@@ -19,7 +19,6 @@ namespace CSRestAPI.Payloads
         /// </summary>
         public JObject GameState { get; set; }
 
-
         /// <summary>
         /// Gets the game state provider for the provided save data.
         /// </summary>

@@ -141,6 +141,11 @@ namespace CSRestAPI.Payloads
         [JsonPropertyGetter("label")]
         public string GetLabel(ElementStack elementStack)
         {
+            if (elementStack.Metafictional)
+            {
+                return elementStack.MetafictionalLabel;
+            }
+
             return elementStack.Label;
         }
 
@@ -152,6 +157,11 @@ namespace CSRestAPI.Payloads
         [JsonPropertyGetter("description")]
         public string GetDescription(ElementStack elementStack)
         {
+            if (elementStack.Metafictional)
+            {
+                return elementStack.MetafictionalDescription;
+            }
+
             return elementStack.Description;
         }
 
