@@ -6,6 +6,9 @@ export interface GetSituationResponse extends GetTokenResponseBase {
   /** The ID of the verb associated with the situation. */
   verbId: string;
 
+  /** Whether the verb will disappear once completed. */
+  spontaneous: boolean;
+
   /** The remaining time for the situation. */
   timeRemaining: number;
 
