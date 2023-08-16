@@ -56,28 +56,20 @@ namespace CSRestAPI.Controllers
         {
             var result = await Dispatcher.RunOnMainThread(() =>
             {
+                string legacyId = null;
+                string legacyLabel = null;
                 var stageHand = Watchman.Get<StageHand>();
-                if (!stageHand.SceneIsActive("S4Tabletop"))
+                if (stageHand.SceneIsActive("S4Tabletop"))
                 {
-                    return null;
-                }
-
-                var protag = Watchman.Get<Stable>().Protag();
-                if (protag == null)
-                {
-                    return null;
-                }
-
-                var legacy = protag.ActiveLegacyId;
-                if (string.IsNullOrEmpty(legacy))
-                {
-                    return null;
+                    var protag = Watchman.Get<Stable>().Protag();
+                    legacyId = protag.ActiveLegacy.Id;
+                    legacyLabel = protag.ActiveLegacy.Label;
                 }
 
                 return new
                 {
-                    legacyId = protag.ActiveLegacyId,
-                    legacyLabel = protag.ActiveLegacy.Label,
+                    legacyId,
+                    legacyLabel,
                 };
             });
 
