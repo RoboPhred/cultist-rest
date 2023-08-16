@@ -92,9 +92,9 @@ Rest API server for interfacing with Cultist Simulator
 
 This endpoint requires that the the situation is unstarted, and that its threshhold spheres have been filled with the cards required to execute a recipe.
 Use `GET /api/by-path/{...situationPath}/spheres` to get the threshhold spheres.
-Use `PUT /api/by-path/{...tokenPath}` with a body of `{"spherePath": "[thresholdSpherePath]"}` to move a card into the sphere's threshhold.
+Use `PATCH /api/by-path/{...tokenPath}` with a body of `{"spherePath": "[thresholdSpherePath]"}` to move a card into the sphere's threshhold.
 
-If you instead want to force a situation to run a recipe without going through the process of attaching cards, you can use `PUT /api/by-path/{...situationPath}` with a body of `{"recipeId": "[recipeId]"}`.
+If you instead want to force a situation to run a recipe without going through the process of attaching cards, you can use `PATCH /api/by-path/{...situationPath}` with a body of `{"recipeId": "[recipeId]"}`.
 
 - **URL**: `/api/by-path/{...path}/execute`
 - **METHOD**: `POST`
@@ -121,7 +121,7 @@ If you instead want to force a situation to run a recipe without going through t
 ### Modify a Token
 
 - **URL**: `/api/by-path/{...path}`
-- **Method**: `PUT`
+- **Method**: `PATCH`
 - **URL Parameters**:
   - `path`: The fucine path of a token.
 - **Body**: JSON object representing the updates to the token.

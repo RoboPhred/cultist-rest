@@ -119,7 +119,7 @@ public class CSRest : MonoBehaviour
             context.Response.AddHeader("Access-Control-Allow-Origin", "*");
 
             // TODO: Choose based on available routes at this path
-            context.Response.AddHeader("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
+            context.Response.AddHeader("Access-Control-Allow-Methods", "GET, PUT, PATCH, POST, DELETE");
             context.Response.AddHeader("Access-Control-Allow-Headers", "Content-Type");
             context.Response.AddHeader("Access-Control-Max-Age", "1728000");
             context.Response.StatusCode = HttpStatusCode.NoContent;

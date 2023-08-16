@@ -105,7 +105,7 @@ namespace CSRestAPI.Controllers
         /// <param name="context">The HTTP context of the request.</param>
         /// <param name="path">The path of the item.</param>
         /// <returns>A task that resolves once the request is completed.</returns>
-        [WebRouteMethod(Method = "PUT", Path = "**path")]
+        [WebRouteMethod(Method = "PATCH", Path = "**path")]
         public async Task UpdateItemAtPath(IHttpContext context, string path)
         {
             var body = context.ParseBody<JObject>();

@@ -17,7 +17,7 @@ GET http://localhost:8081/api/by-path/~/tabletop/tokens
 
 ###
 # Open the Sail verb
-PUT http://localhost:8081/api/by-path/~/tabletop/!mariner.sail_0
+PATCH http://localhost:8081/api/by-path/~/tabletop/!mariner.sail_0
 Content-Type: application/json
 
 {
@@ -30,7 +30,7 @@ GET http://localhost:8081/api/by-path/~/tabletop/!mariner.sail_0/spheres
 
 ###
 # Move the Kite from the tabletop to the Ship sphere of the Sail verb
-PUT http://localhost:8081/api/by-path/~/tabletop/!mariner.ship.kite_3
+PATCH http://localhost:8081/api/by-path/~/tabletop/!mariner.ship.kite_3
 Content-Type: application/json
 
 {
@@ -40,7 +40,7 @@ Content-Type: application/json
 ###
 # Move London from the tabletop to the Destination sphere of the Sail verb
 
-PUT http://localhost:8081/api/by-path/~/tabletop/!mariner.locations.northsea.london.away_4
+PATCH http://localhost:8081/api/by-path/~/tabletop/!mariner.locations.northsea.london.away_4
 Content-Type: application/json
 
 {
@@ -71,7 +71,7 @@ POST http://localhost:8081/api/by-path/~/tabletop!mariner.sail_0/conclude
 
 ###
 # Close the Sail verb
-PUT http://localhost:8081/api/by-path/~/tabletop/!mariner.localhost:8081/api/by-path/~/tabletop/!mariner.sail_0
+PATCH http://localhost:8081/api/by-path/~/tabletop/!mariner.localhost:8081/api/by-path/~/tabletop/!mariner.sail_0
 Content-Type: application/json
 
 {
