@@ -47,6 +47,44 @@ namespace CSRestAPI.Controllers
         }
 
         /// <summary>
+        /// Gets the active legacy, if any.
+        /// </summary>
+        /// <param name="context">The HTTP request context.</param>
+        /// <returns>A task that completes when the request is handled.</returns>
+        [WebRouteMethod(Method = "GET", Path = "legacy")]
+        public async Task GetLegacy(IHttpContext context)
+        {
+            var result = await Dispatcher.RunOnMainThread(() =>
+            {
+                var stageHand = Watchman.Get<StageHand>();
+                if (!stageHand.SceneIsActive("S4Tabletop"))
+                {
+                    return null;
+                }
+
+                var protag = Watchman.Get<Stable>().Protag();
+                if (protag == null)
+                {
+                    return null;
+                }
+
+                var legacy = protag.ActiveLegacyId;
+                if (string.IsNullOrEmpty(legacy))
+                {
+                    return null;
+                }
+
+                return new
+                {
+                    legacyId = protag.ActiveLegacyId,
+                    legacyLabel = protag.ActiveLegacy.Label,
+                };
+            });
+
+            await context.SendResponse(HttpStatusCode.OK, result);
+        }
+
+        /// <summary>
         /// Starts a new legacy.
         /// </summary>
         /// <param name="context">The HTTP request context.</param>
