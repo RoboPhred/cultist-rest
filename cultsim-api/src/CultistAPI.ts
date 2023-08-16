@@ -95,7 +95,11 @@ export class CultistAPI {
     fucinePath: string,
     updates: Partial<any>
   ): Promise<any> {
-    return request("PUT", `${this.baseUrl}/api/by-path/${fucinePath}`, updates);
+    return request(
+      "PATCH",
+      `${this.baseUrl}/api/by-path/${fucinePath}`,
+      updates
+    );
   }
 
   public async deleteTokenAtPath(fucinePath: string): Promise<void> {
