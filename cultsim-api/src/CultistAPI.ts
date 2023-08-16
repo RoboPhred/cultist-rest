@@ -17,36 +17,40 @@ import {
 // PathTargetError - Trying to execute a verb when targeting a token
 
 export class CultistAPI {
-  private baseUrl: string;
+  private _baseUrl: string;
 
   constructor(baseUrl: string) {
-    this.baseUrl = baseUrl;
+    this._baseUrl = baseUrl;
+  }
+
+  get apiUrl() {
+    return `${this._baseUrl}/api`;
   }
 
   public getLegacy(): Promise<GetLegacyResponse> {
-    return request("GET", `${this.baseUrl}/api/game-state/legacy`);
+    return request("GET", `${this._baseUrl}/api/game-state/legacy`);
   }
 
   public loadGameState(gameState: any): Promise<void> {
-    return request("PUT", `${this.baseUrl}/api/game-state`, { gameState });
+    return request("PUT", `${this._baseUrl}/api/game-state`, { gameState });
   }
 
   public loadLegacy(legacyId: string): Promise<void> {
-    return request("PUT", `${this.baseUrl}/api/game-state/legacy`, {
+    return request("PUT", `${this._baseUrl}/api/game-state/legacy`, {
       legacyId,
     });
   }
 
   public setSpeed(speed: "Paused" | "Normal" | "Fast" | "VeryFast") {
-    return request("POST", `${this.baseUrl}/api/time/speed`, { speed });
+    return request("POST", `${this._baseUrl}/api/time/speed`, { speed });
   }
 
   public passTime(seconds: number) {
-    return request("POST", `${this.baseUrl}/api/time/beat`, { seconds });
+    return request("POST", `${this._baseUrl}/api/time/beat`, { seconds });
   }
 
   public getSpheresAtPath(fucinePath: string): Promise<GetSphereResponse[]> {
-    return request("GET", `${this.baseUrl}/api/by-path/${fucinePath}/spheres`);
+    return request("GET", `${this._baseUrl}/api/by-path/${fucinePath}/spheres`);
   }
 
   public async getTokensAtPath(
@@ -56,7 +60,7 @@ export class CultistAPI {
     const qs = new URLSearchParams(query).toString();
     return request(
       "GET",
-      `${this.baseUrl}/api/by-path/${fucinePath}/tokens?${qs}`
+      `${this._baseUrl}/api/by-path/${fucinePath}/tokens?${qs}`
     );
   }
 
@@ -74,7 +78,7 @@ export class CultistAPI {
   ): Promise<GetTokenResponse | GetTokenResponse[]> {
     return request(
       "POST",
-      `${this.baseUrl}/api/by-path/${fucinePath}/tokens`,
+      `${this._baseUrl}/api/by-path/${fucinePath}/tokens`,
       tokenRequestOrRequests
     );
   }
@@ -82,12 +86,12 @@ export class CultistAPI {
   public deleteAllTokensAtPath(fucinePath: string): Promise<void> {
     return request(
       "DELETE",
-      `${this.baseUrl}/api/by-path/${fucinePath}/tokens`
+      `${this._baseUrl}/api/by-path/${fucinePath}/tokens`
     );
   }
 
   public getTokenIconUrlAtPath(fucinePath: string): string {
-    return `${this.baseUrl}/api/by-path/${fucinePath}/icon.png`;
+    return `${this._baseUrl}/api/by-path/${fucinePath}/icon.png`;
   }
 
   public updateTokenAtPath(
@@ -104,26 +108,26 @@ export class CultistAPI {
   ): Promise<any> {
     return request(
       "PATCH",
-      `${this.baseUrl}/api/by-path/${fucinePath}`,
+      `${this._baseUrl}/api/by-path/${fucinePath}`,
       updates
     );
   }
 
   public deleteTokenAtPath(fucinePath: string): Promise<void> {
-    return request("DELETE", `${this.baseUrl}/api/by-path/${fucinePath}`);
+    return request("DELETE", `${this._baseUrl}/api/by-path/${fucinePath}`);
   }
 
   public executeSituationAtPath(situationPath: string) {
     return request(
       "POST",
-      `${this.baseUrl}/api/by-path/${situationPath}/execute`
+      `${this._baseUrl}/api/by-path/${situationPath}/execute`
     );
   }
 
   public concludeSituationAtPath(situationPath: string) {
     return request(
       "POST",
-      `${this.baseUrl}/api/by-path/${situationPath}/conclude`
+      `${this._baseUrl}/api/by-path/${situationPath}/conclude`
     );
   }
 }
