@@ -26,6 +26,17 @@ namespace CSRestAPI.Payloads
         }
 
         /// <summary>
+        /// Gets a value indicating if this spontaneous is a spontanious verb.
+        /// </summary>
+        /// <param name="situation">The situation.</param>
+        /// <returns>A value indicating if this situation is spontaneous.</returns>
+        [JsonPropertyGetter("spontaneous")]
+        public bool GetSpontanious(Situation situation)
+        {
+            return situation.Verb.Spontaneous;
+        }
+
+        /// <summary>
         /// Gets the time remaining in the situation's current recipe.
         /// </summary>
         /// <param name="situation">The situation.</param>
