@@ -86,6 +86,10 @@ export class CultistAPI {
     );
   }
 
+  public getTokenIconUrlAtPath(fucinePath: string): string {
+    return `${this.baseUrl}/api/by-path/${fucinePath}/icon.png`;
+  }
+
   public updateTokenAtPath(
     fucinePath: string,
     updates: Partial<PutElementStackRequest>
