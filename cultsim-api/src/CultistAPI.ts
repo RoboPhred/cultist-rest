@@ -1,4 +1,4 @@
-import fetch, { RequestInit } from "node-fetch";
+import fetch from "cross-fetch";
 
 import { APIError } from "./errors.js";
 import {
