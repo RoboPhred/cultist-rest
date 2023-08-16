@@ -22,6 +22,14 @@ export class CultistAPI {
     this.baseUrl = baseUrl;
   }
 
+  public async getLegacy(): Promise<string | null> {
+    const response = await request(
+      "GET",
+      `${this.baseUrl}/api/game-state/legacy`
+    );
+    return response.legacy;
+  }
+
   public async loadGameState(gameState: any): Promise<void> {
     return request("PUT", `${this.baseUrl}/api/game-state`, { gameState });
   }
