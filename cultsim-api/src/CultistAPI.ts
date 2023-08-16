@@ -9,6 +9,7 @@ import {
   PutSituationRequest,
   GetSphereResponse,
   PostTokenRequest,
+  GetLegacyResponse,
 } from "./payloads/index.js";
 
 // TODO: Wrap errors in additional errors explaining why things failed
@@ -22,35 +23,29 @@ export class CultistAPI {
     this.baseUrl = baseUrl;
   }
 
-  public async getLegacy(): Promise<string | null> {
-    const response = await request(
-      "GET",
-      `${this.baseUrl}/api/game-state/legacy`
-    );
-    return response.legacy;
+  public getLegacy(): Promise<GetLegacyResponse> {
+    return request("GET", `${this.baseUrl}/api/game-state/legacy`);
   }
 
-  public async loadGameState(gameState: any): Promise<void> {
+  public loadGameState(gameState: any): Promise<void> {
     return request("PUT", `${this.baseUrl}/api/game-state`, { gameState });
   }
 
-  public async loadLegacy(legacyId: string): Promise<void> {
+  public loadLegacy(legacyId: string): Promise<void> {
     return request("PUT", `${this.baseUrl}/api/game-state/legacy`, {
       legacyId,
     });
   }
 
-  public async setSpeed(speed: "Paused" | "Normal" | "Fast" | "VeryFast") {
+  public setSpeed(speed: "Paused" | "Normal" | "Fast" | "VeryFast") {
     return request("POST", `${this.baseUrl}/api/time/speed`, { speed });
   }
 
-  public async passTime(seconds: number) {
+  public passTime(seconds: number) {
     return request("POST", `${this.baseUrl}/api/time/beat`, { seconds });
   }
 
-  public async getSpheresAtPath(
-    fucinePath: string
-  ): Promise<GetSphereResponse[]> {
+  public getSpheresAtPath(fucinePath: string): Promise<GetSphereResponse[]> {
     return request("GET", `${this.baseUrl}/api/by-path/${fucinePath}/spheres`);
   }
 
@@ -65,15 +60,15 @@ export class CultistAPI {
     );
   }
 
-  public async createTokensAtPath(
+  public createTokensAtPath(
     fucinePath: string,
     tokenRequest: PostTokenRequest
   ): Promise<GetTokenResponse>;
-  public async createTokensAtPath(
+  public createTokensAtPath(
     fucinePath: string,
     tokenRequests: PostTokenRequest[]
   ): Promise<GetTokenResponse[]>;
-  public async createTokensAtPath(
+  public createTokensAtPath(
     fucinePath: string,
     tokenRequestOrRequests: PostTokenRequest | PostTokenRequest[]
   ): Promise<GetTokenResponse | GetTokenResponse[]> {
@@ -84,22 +79,22 @@ export class CultistAPI {
     );
   }
 
-  public async deleteAllTokensAtPath(fucinePath: string): Promise<void> {
+  public deleteAllTokensAtPath(fucinePath: string): Promise<void> {
     return request(
       "DELETE",
       `${this.baseUrl}/api/by-path/${fucinePath}/tokens`
     );
   }
 
-  public async updateTokenAtPath(
+  public updateTokenAtPath(
     fucinePath: string,
     updates: Partial<PutElementStackRequest>
   ): Promise<GetElementStackResponse>;
-  public async updateTokenAtPath(
+  public updateTokenAtPath(
     fucinePath: string,
     updates: Partial<PutSituationRequest>
   ): Promise<GetSituationResponse>;
-  public async updateTokenAtPath(
+  public updateTokenAtPath(
     fucinePath: string,
     updates: Partial<any>
   ): Promise<any> {
@@ -110,18 +105,18 @@ export class CultistAPI {
     );
   }
 
-  public async deleteTokenAtPath(fucinePath: string): Promise<void> {
+  public deleteTokenAtPath(fucinePath: string): Promise<void> {
     return request("DELETE", `${this.baseUrl}/api/by-path/${fucinePath}`);
   }
 
-  public async executeSituationAtPath(situationPath: string) {
+  public executeSituationAtPath(situationPath: string) {
     return request(
       "POST",
       `${this.baseUrl}/api/by-path/${situationPath}/execute`
     );
   }
 
-  public async concludeSituationAtPath(situationPath: string) {
+  public concludeSituationAtPath(situationPath: string) {
     return request(
       "POST",
       `${this.baseUrl}/api/by-path/${situationPath}/conclude`

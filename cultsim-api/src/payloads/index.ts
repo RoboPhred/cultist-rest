@@ -1,4 +1,5 @@
 export * from "./element-stack.js";
+export * from "./legacy.js";
 export * from "./situation.js";
 export * from "./sphere.js";
 export * from "./token.js";
